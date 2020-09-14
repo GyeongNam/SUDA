@@ -17,8 +17,9 @@ class CreatePostTable extends Migration
             $table->bigIncrements('post_num');
             $table->string('Kategorie');
             $table->string('Title');
-            $table->string('image');
-            $table->integer('like');
+            $table->string('Text');
+            $table->string('image')->nulluble();
+            $table->integer('like')->nulluble();
             $table->boolean('post_activation');
             $table->timestamps();
         });
