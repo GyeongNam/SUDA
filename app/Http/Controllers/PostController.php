@@ -32,7 +32,7 @@ class PostController extends Controller
       return response()->json(['data'=> $message]);
     }
 
-    public function update_post(Request $request){      // 게시글 수정 화면 데이터 바인딩 함수
+    public function up_post(Request $request){      // 게시글 수정 화면 데이터 바인딩 함수
       $post_num = $request->input('post_num');
       $data = Post::select('*')->where(['post_num']=>$post_num)->first();
 
