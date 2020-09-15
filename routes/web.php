@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\LoginController;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,9 +20,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('/login', [LoginController::class, 'Login']);
+
+
+
 Route::post('/add_post', [PostController::class, 'add_post']);        // 게시글 추가
 Route::get('/up_post', [PostController::class, 'up_post']);       // 게시글 수정을 위한 데이터 바인딩
 Route::post('/update_post', [PostController::class, 'update_post']);    // 게시글 수정
 Route::post('/delete_post', [PostController::class, 'delete_post']);    // 게시글 비활성화(삭제)
 
-Route::post('/sms_send', 'SMSController@SendMessage'); //SMS 인증 
+Route::post('/sms_send', 'SMSController@SendMessage'); //SMS 인증
