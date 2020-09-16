@@ -21,7 +21,7 @@ Route::get('/', function () {
 });
 
 Route::post('/login', [LoginController::class, 'Login']); //로그인
-Route::post('/sign_up','Sign_upController@signup');  //회원가입
+Route::post('/signup','Sign_upController@signup');  //회원가입
 Route::post('/uservalidate', 'UserValidate@validate');  //아이디 중복확인
 
 Route::post('/add_post', [PostController::class, 'add_post']);        // 게시글 추가
