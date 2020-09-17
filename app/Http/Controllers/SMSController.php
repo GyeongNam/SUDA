@@ -78,14 +78,11 @@ class SMSController extends Controller
             //$message = 1;
         } else {
             $this->ResultMsg = "Connection Failed";
-            //$message = 0;
+            // $message = 0;
         }
         // return $rMsg;
-        //return response()->json(['data'=>$rMsg]);
-        $message = 1;
-        {
-          else $message = 0;
-        }
+        return response()->json(['data'=>$rMsg]);
+        // $message = 1;
     }
 
 }
