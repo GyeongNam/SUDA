@@ -74,11 +74,9 @@ class SMSController extends Controller
             $Result= $rMsg[0]; //발송결과
             $this->Count= $rMsg[1]; //잔여건수
             $this->ResultCode = 0;
-
-            $message = 1;
+            
         } else {
             $this->ResultMsg = "Connection Failed";
-            $message = 0;
         }
         // return $rMsg;
         //return response()->json(['data'=>$rMsg]);
