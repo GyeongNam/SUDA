@@ -21,6 +21,8 @@ Route::get('/', function () {
 });
 
 Route::post('/login', [LoginController::class, 'Login']); //로그인
+Route::post('/idcheck', [LoginController::class, 'idcheck']); //로그인
+
 Route::post('/signup','Sign_upController@signup');  //회원가입
 Route::post('/uservalidate', 'UserValidate@validate');  //아이디 중복확인
 
