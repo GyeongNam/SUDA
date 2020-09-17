@@ -12,7 +12,7 @@ class Sign_upController extends Controller
     
     $user = new user([
       'id' => $request->input('id'),
-      'password' => decrypt($request ->input('password')),
+      'password' => bcrypt($request ->input('password')),
       'phone'=> $request -> input('phone')
     ]);
     $post->save();
