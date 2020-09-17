@@ -20,6 +20,8 @@ class CreateCommentTable extends Migration
           $table->timestamps();
         });
         Schema::table('comment', function (Blueprint $table) {
+          $table->unsignedBigInteger('post_num');
+          $table->foreign('post_num')->references('post_num')->on('post');
           $table->string('c_writer');
           $table->foreign('c_writer')->references('id')->on('users');
         });
