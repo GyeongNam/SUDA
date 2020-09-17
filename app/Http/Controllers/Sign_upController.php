@@ -31,6 +31,6 @@ class Sign_upController extends Controller
       else {
         $message = 1;     // 사용 가능한 아이디
       }
-      return response()->json(['data'=> $message]);
+      return $message;
     }
 }
