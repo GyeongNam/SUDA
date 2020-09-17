@@ -17,6 +17,10 @@ class Sign_upController extends Controller
     	   'phone'=> $request -> input('phone')
       ]);
       $post->save();
+
+      $message = 1;     // 가입 성공
+
+      return response()->json(['data'=> $message]);
     }
 
     public function idcheck(Request $request){
