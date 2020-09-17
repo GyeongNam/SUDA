@@ -10,18 +10,18 @@ class Sign_upController extends Controller
 {
 
   public function signup(Request $request){
-
+    // return 0;
      $users = new User([
-       'id' => $request->input('id'),
-       'password' => bcrypt($request ->input('password')),
-       'phone'=> $request -> input('phone'),
+       'id' => $request->id,
+       'password' => bcrypt($request ->password),
+       'phone'=> $request -> phone,
        'user_activation' => 1
     ]);
     $users->save();
 
     $message = 1;     // 가입 성공
 
-    return response()->json(['data'=> $message]);
+    return $message;
   }
 
     public function idcheck(Request $request){
