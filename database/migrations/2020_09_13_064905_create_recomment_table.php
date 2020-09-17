@@ -20,6 +20,8 @@ class CreateRecommentTable extends Migration
           $table->timestamps();
         });
         Schema::table('recomment', function (Blueprint $table) {
+          $table->unsignedBigInteger('post_num');
+          $table->foreign('post_num')->references('post_num')->on('post');
           $table->unsignedBigInteger('c_num');
           $table->foreign('c_num')->references('c_num')->on('comment');
           $table->string('rc_writer');
