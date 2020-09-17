@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Comment;
 
 class PostController extends Controller
 {
@@ -92,5 +93,14 @@ class PostController extends Controller
       }
 
       return response()->json(['data'=> $message]);
+    }
+
+    public function post_detail(Request $request){    // 상세 글 조회
+      $post_num = $request->post_num;
+
+      $data = Post::select("*")->where(["post_num"=>$post_num])->first();
+      $comment = Comment::select("*")->where(["post_num"=>$post_num])->get();
+
+      return $data, $comment;
     }
 }
