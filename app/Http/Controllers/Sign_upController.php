@@ -21,7 +21,7 @@ class Sign_upController extends Controller
     }
 
     public function idcheck(Request $request){
-      $id = $request->input("id");
+      $id = $request->id;
 
       $data = User::select('*')->where(["ID"=>$id])->get();
 
