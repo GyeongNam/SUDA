@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 class SMSController extends Controller
 {
     function SendMessage(Request $request){
-        $sendNumber = $request->('phone');
-        $random = $request->('random');
+        $sendNumber = $request->phone;
+        $random = $request->random;
         // $smsdata['sendNumber'];  // 받는 전화번호
         // $sPhone = $smsdata['sPhone'];
         // $subject = $smsdata['subject'];
