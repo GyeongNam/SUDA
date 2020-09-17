@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\Sign_upController;
 use Illuminate\Http\Request;
 
 /*
@@ -21,7 +22,7 @@ Route::get('/', function () {
 });
 
 Route::post('/login', [LoginController::class, 'Login']); //로그인
-Route::post('/idcheck', [LoginController::class, 'idcheck']); //로그인
+Route::post('/idcheck', [Sign_upController::class, 'idcheck']); //로그인
 
 Route::post('/signup','Sign_upController@signup');  //회원가입
 Route::post('/uservalidate', 'UserValidate@validate');  //아이디 중복확인
