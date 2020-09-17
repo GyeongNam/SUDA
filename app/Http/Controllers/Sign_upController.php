@@ -11,13 +11,12 @@ class Sign_upController extends Controller
 
     public function signup(Request $request){
 
-      return 0;
-      // $user = new user([
-      //   'id' => $request->input('id'),
-      //   'password' => decrypt($request ->input('password')),
-      // 	'phone'=> $request -> input('phone')
-      // ]);
-      // $post->save();
+       $user = new user([
+         'id' => $request->input('id'),
+         'password' => decrypt($request ->input('password')),
+    	   'phone'=> $request -> input('phone')
+      ]);
+      $post->save();
     }
 
     public function idcheck(Request $request){
