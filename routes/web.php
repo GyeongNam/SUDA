@@ -25,7 +25,7 @@ Route::get('/', function () {
 
 Route::post('/login', [LoginController::class, 'Login']); //로그인
 Route::post('/idcheck', [Sign_upController::class, 'idcheck']); //로그인
-Route::post('/signup', [UserController::class, 'signup']);  //회원가입
+Route::post('/signup', [Sign_upController::class, 'signup']);  //회원가입
 
 Route::post('/add_post', [PostController::class, 'add_post']);        // 게시글 추가
 Route::get('/up_post', [PostController::class, 'up_post']);       // 게시글 수정을 위한 데이터 바인딩
