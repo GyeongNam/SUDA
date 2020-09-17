@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Sign_upController;
+use App\Http\Controllers\SMSController;
 use Illuminate\Http\Request;
 
 /*

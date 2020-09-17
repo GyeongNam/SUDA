@@ -18,6 +18,7 @@ class SMSController extends Controller
         $sPhone2 = '9285';   //중간 번호
         $sPhone3 = '0290';   //마지막 번호
 
+
        /******************** 인증정보 ********************/
         $sms_url = "https://sslsms.cafe24.com/sms_sender.php"; // 전송요청 URL
 
@@ -78,8 +79,8 @@ class SMSController extends Controller
         } else {
             $this->ResultMsg = "Connection Failed";
         }
-        // return $rMsg;
-        return response()->json(['data'=>$rMsg]);
+        return $rMsg[0];
+        // return response()->json(['data'=>$rMsg]);
         // $message = 1;
     }
 
