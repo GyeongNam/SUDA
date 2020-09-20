@@ -22,7 +22,14 @@ use Illuminate\Http\Request;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::post('/main', [UserController::class, 'main']); // 로그인 후 첫 진입화면
+Route::get('/test', function () {
+  $data[] = ['test1'=>'1','test2'=>'2'];
+  $test = array('test1'=>'55','test2'=>'23');
+  // $test[] = [1,2];
+  return $test;
+    return urldecode(json_encode($test));
+});
 Route::post('/login', [LoginController::class, 'Login']); //로그인
 Route::post('/idcheck', [Sign_upController::class, 'idcheck']); //로그인
 Route::post('/signup', [Sign_upController::class, 'signup']);  //회원가입

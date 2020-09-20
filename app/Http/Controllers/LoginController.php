@@ -19,6 +19,7 @@ class LoginController extends Controller
       //로그인 실패 리턴값
     }
     //로그인 성공 리턴값
+session()->put('testid',54);
     return 1;
 
     return DB::table('users')->get();
