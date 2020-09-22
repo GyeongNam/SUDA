@@ -30,7 +30,7 @@ class PostController extends Controller
 
       $message = 1;     // 등록 성공
 
-      return $message;
+      return $request->Text;
     }
 
     public function up_post(Request $request){      // 게시글 수정 화면 데이터 바인딩 함수
