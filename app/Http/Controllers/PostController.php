@@ -19,12 +19,12 @@ class PostController extends Controller
       }
 
       $post = new Post([
-    	'Kategorie' => $request->intput('kategorie'),
-    	'Title' => $request->intput('Title'),
-      'Text' => $request->input('Text'),
+    	'Kategorie' => $request->kategorie,
+    	'Title' => $request->Title,
+      'Text' => $request->Text,
     	'image' => $image,
     	'post_activation' => 1,
-    	'writer' => $request->intput('writer')
+    	'writer' => $request->writer
       ]);
       $post->save();
 
