@@ -30,7 +30,7 @@ class PostController extends Controller
 
       $message = 1;     // 등록 성공
 
-      return response()->json(['data'=> $message]);
+      return $message;
     }
 
     public function up_post(Request $request){      // 게시글 수정 화면 데이터 바인딩 함수
@@ -48,7 +48,7 @@ class PostController extends Controller
         $message = 0;      // 데이터를 가져올것이 없어 실패
       }
 
-      return response()->json(['data'=> $message]);
+      return $message;
     }
 
     public function update_post(Request $request){      // 게시글 업데이트 함수
@@ -76,7 +76,7 @@ class PostController extends Controller
         $message = 0;      // 업데이트 할것이 없어 실패
       }
 
-      return response()->json(['data'=> $message]);
+      return $message;
     }
 
     public function delete_post(Request $request){    // 게시글 비활성화 함수
@@ -92,7 +92,7 @@ class PostController extends Controller
         $message = 0;     // 업데이트 할것이 없어 실패
       }
 
-      return response()->json(['data'=> $message]);
+      return $message;
     }
 
     public function post_detail(Request $request){    // 상세 글 조회
