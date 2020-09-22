@@ -101,6 +101,6 @@ class PostController extends Controller
       $data = Post::select("*")->where(["post_num"=>$post_num])->first();
       $comment = Comment::select("*")->where(["post_num"=>$post_num])->get();
 
-      return $data, $comment;
+      // return $data, $comment;
     }
 }
