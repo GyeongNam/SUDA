@@ -18,15 +18,15 @@ class PostController extends Controller
       //   $image = null;
       // }
 
-      $post = new Post([
-    	'Kategorie' => $request->kategorie,
-    	'Title' => $request->Title,
-      'Text' => $request->Text,
-    	'image' => $image,
-    	'post_activation' => 1,
-    	'writer' => $request->writer
-      ]);
-      $post->save();
+      // $post = new Post([
+    	// 'Kategorie' => $request->kategorie,
+    	// 'Title' => $request->Title,
+      // 'Text' => $request->Text,
+    	// 'image' => $image,
+    	// 'post_activation' => 1,
+    	// 'writer' => $request->writer
+      // ]);
+      // $post->save();
 
       $message = 1;     // 등록 성공
 
