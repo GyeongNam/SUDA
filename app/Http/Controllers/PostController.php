@@ -21,7 +21,7 @@ class PostController extends Controller
       $post = new Post([
     	'Kategorie' => $request->kategorie,
     	'Title' => $request->Title,
-      'TEXT' => $request->Text,
+      'Text' => $request->Text,
     	'image' => $image,
     	'post_activation' => 1,
     	'writer' => $request->writer

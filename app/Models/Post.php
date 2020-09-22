@@ -10,9 +10,10 @@ class Post extends Model
     use HasFactory;
     protected $table = 'post';
     protected $fillable =[
-      'post_num', 
+      'post_num',
     	'Kategorie',
     	'Title',
+      'Text',
     	'image',
     	'like',
     	'post_activation',
