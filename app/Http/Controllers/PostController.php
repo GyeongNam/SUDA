@@ -9,24 +9,24 @@ use App\Models\Comment;
 class PostController extends Controller
 {
     public function add_post(Request $request){   // 게시글 추가 함수
-      // if($request->hasFile('image')){
-      //   $image = $request->file('image');
-      //   $picture= $image->getClientOriginalName();
-      //   Image::make($image)->save(public_path('/img/'.$picture));
-      // }
-      // else {
-      //   $image = null;
-      // }
+      if($request->hasFile('image')){
+        $image = $request->file('image');
+        $picture= $image->getClientOriginalName();
+        Image::make($image)->save(public_path('/img/'.$picture));
+      }
+      else {
+        $image = null;
+      }
 
-      // $post = new Post([
-    	// 'Kategorie' => $request->kategorie,
-    	// 'Title' => $request->Title,
-      // 'Text' => $request->Text,
-    	// 'image' => $image,
-    	// 'post_activation' => 1,
-    	// 'writer' => $request->writer
-      // ]);
-      // $post->save();
+      $post = new Post([
+    	'Kategorie' => $request->kategorie,
+    	'Title' => $request->Title,
+      'Text' => $request->Text,
+    	'image' => $image,
+    	'post_activation' => 1,
+    	'writer' => $request->writer
+      ]);
+      $post->save();
 
       $message = 1;     // 등록 성공
 
