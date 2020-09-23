@@ -97,10 +97,9 @@ class PostController extends Controller
 
     public function post_detail(Request $request){    // 상세 글 조회
       $post_num = $request->post_num;
-
       $data = Post::select("*")->where(["post_num"=>$post_num])->first();
       $comment = Comment::select("*")->where(["post_num"=>$post_num])->get();
 
-      // return $data, $comment;
+      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
     }
 }
