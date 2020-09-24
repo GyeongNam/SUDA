@@ -25,7 +25,7 @@ class PostController extends Controller
     	'Kategorie' => $request->kategorie,
     	'Title' => $request->Title,
       'Text' => $request->Text,
-    	'image' => $image,
+    	'image' => $picture,
     	'post_activation' => 1,
     	'writer' => $request->writer
       ]);
