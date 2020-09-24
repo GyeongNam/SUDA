@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Sign_upController;
 use App\Http\Controllers\SMSController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 
 /*
@@ -22,6 +23,7 @@ use Illuminate\Http\Request;
 Route::get('/', function () {
     return view('welcome');
 });
+
 Route::post('/main', [UserController::class, 'main']); // 로그인 후 첫 진입화면
 Route::get('/test', function () {
   $data[] = ['test1'=>'1','test2'=>'2'];
@@ -39,4 +41,5 @@ Route::get('/up_post', [PostController::class, 'up_post']);       // 게시글 �
 Route::post('/update_post', [PostController::class, 'update_post']);    // 게시글 수정
 Route::post('/delete_post', [PostController::class, 'delete_post']);    // 게시글 비활성화(삭제)
 Route::post('/SendMessage', [SMSController::class, 'SendMessage']); //SMS 인증
-Route::post('/post_detail', [PostController::class, 'post_detail']); //게시글 상세보기
+Route::post('/post_detail', [PostController::class, 'post_detail']);//게시글 상세보기
+Route::post('/post_reply', [PostController::class, 'post_reply']);

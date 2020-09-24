@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Comment;
+use Image;
+use DB;
 
 class PostController extends Controller
 {
     public function add_post(Request $request){   // 게시글 추가 함수
+      // return 0;
       if($request->hasFile('image')){
         $image = $request->file('image');
         $picture= $image->getClientOriginalName();
@@ -97,9 +100,23 @@ class PostController extends Controller
 
     public function post_detail(Request $request){    // 상세 글 조회
       $post_num = $request->post_num;
-      $data = Post::select("*")->where(["post_num"=>$post_num])->first();
-      $comment = Comment::select("*")->where(["post_num"=>$post_num])->get();
-
+      // return $post_num;
+      // $data = Post::select("*")->where(["post_num"=>$post_num])->first();
+      // $comment = Comment::select("*")->where(["post_num"=>$post_num])->get();
+      $data = DB::table('post')->where('post_num',$post_num)->join('comment','post.post_num','comment.post_num')->get();
+      return $data;
       return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    }
+    public function post_reply(Request $request){
+      Comment::insert([
+        'comment' => $request->reply,
+        'c_writer' => $request->writer,
+        'post_num'=> $request->post_num,
+        'c_activation' => 1
+      ]);
+
+
+
+      return 0;
     }
 }

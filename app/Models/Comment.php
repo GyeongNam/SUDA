@@ -15,6 +15,7 @@ class Comment extends Model
     	'c_activation',
     	'created_at',
     	'updated_at',
-    	'c_writer'
+    	'c_writer',
+      'post_num'
     ];
 }
