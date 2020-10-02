@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,16 +22,21 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+  return view('welcome');
 });
 
 Route::post('/main', [UserController::class, 'main']); // 로그인 후 첫 진입화면
 Route::get('/test', function () {
-  $data[] = ['test1'=>'1','test2'=>'2'];
-  $test = array('test1'=>'55','test2'=>'23');
-  // $test[] = [1,2];
-  return $test;
-    return urldecode(json_encode($test));
+  $data = DB::table('post')->where('post.post_num',1)
+  ->join('comment','post.post_num','comment.post_num')->get();
+  $data1 = DB::table('comment')->where('parent',76)->orderBydesc('c_num')->get();
+
+  // 정렬하기
+  $data = DB::table('post')->where('post.post_num',103)->join('comment','post.post_num','comment.post_num')
+  ->orderByRaw("IF(ISNULL(parent), c_num, parent), seq")->get();
+  return $data;
+  return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+  // return urldecode(json_encode($test));
 });
 Route::post('/login', [LoginController::class, 'Login']); //로그인
 Route::post('/idcheck', [Sign_upController::class, 'idcheck']); //로그인
@@ -43,3 +49,6 @@ Route::post('/delete_post', [PostController::class, 'delete_post']);    // 게�
 Route::post('/SendMessage', [SMSController::class, 'SendMessage']); //SMS 인증
 Route::post('/post_detail', [PostController::class, 'post_detail']);//게시글 상세보기
 Route::post('/post_reply', [PostController::class, 'post_reply']);
+Route::post('/post_rereply', [PostController::class, 'post_rereply']);
+Route::post('/del_reply', [PostController::class, 'del_reply']);// 댓글 삭제
+Route::post('/board_list', [PostController::class, 'board_list']);//게시판 리스트
