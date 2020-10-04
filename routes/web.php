@@ -8,6 +8,7 @@ use App\Http\Controllers\SMSController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
+// use DateTime;
 
 
 /*
@@ -27,6 +28,7 @@ Route::get('/', function () {
 
 Route::post('/main', [UserController::class, 'main']); // 로그인 후 첫 진입화면
 Route::get('/test', function () {
+  $now = new DateTime;
   $data = DB::table('post')->where('post.post_num',1)
   ->join('comment','post.post_num','comment.post_num')->get();
   $data1 = DB::table('comment')->where('parent',76)->orderBydesc('c_num')->get();
@@ -34,7 +36,8 @@ Route::get('/test', function () {
   // 정렬하기
   $data = DB::table('post')->where('post.post_num',103)->join('comment','post.post_num','comment.post_num')
   ->orderByRaw("IF(ISNULL(parent), c_num, parent), seq")->get();
-  return $data;
+  $data2 = DB::table('comment')->get();
+  return $data2[0]->created_at;
   return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
   // return urldecode(json_encode($test));
 });
@@ -52,3 +55,4 @@ Route::post('/post_reply', [PostController::class, 'post_reply']);
 Route::post('/post_rereply', [PostController::class, 'post_rereply']);
 Route::post('/del_reply', [PostController::class, 'del_reply']);// 댓글 삭제
 Route::post('/board_list', [PostController::class, 'board_list']);//게시판 리스트
+Route::post('/post_like', [PostController::class, 'post_like']); //게시글 좋아요

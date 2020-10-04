@@ -115,14 +115,8 @@ class PostController extends Controller
       return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
     }
     public function post_reply(Request $request){//댓글달기
-      // Comment::insert([
-      //   'comment' => $request->reply,
-      //   'c_writer' => $request->writer,
-      //   'post_num'=> $request->post_num,
-      //   'c_activation' => 1,
-      //   'seq' => 1,
-      // ]);
-      // return 0;
+      $now = new DateTime;
+      return $now->format('yy-m-d H:i');
 
       //대댓글
       if(!$request->comment_num==null){
@@ -137,6 +131,7 @@ class PostController extends Controller
             'post_num'=> $request->post_num,
             'c_activation' => 1,
             'seq' => 1,
+            'created_at' => $now->format('yy-m-d H:i:s'),
             'parent'=>$request->comment_num
           ]);
         }
@@ -148,6 +143,7 @@ class PostController extends Controller
             'post_num'=> $request->post_num,
             'c_activation' => 1,
             'seq' => $data[0]->seq+1,
+            'created_at' => $now->format('yy-m-d H:i:s'),
             'parent'=>$request->comment_num
           ]);
 
@@ -160,6 +156,7 @@ class PostController extends Controller
           'comment' => $request->reply,
           'c_writer' => $request->writer,
           'post_num'=> $request->post_num,
+          'created_at' => $now->format('yy-m-d H:i:s'),
           'c_activation' =>1,
           'seq' => 1,
         ]);
@@ -184,5 +181,23 @@ class PostController extends Controller
       $data = DB::table('post')->where('Kategorie',$Kategorie)->get();
       return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
 
+    }
+    public function post_like(Request $request){
+      $data = DB::table('postlike')->where('writer',$request->writer)->where('post_num',$request->post_num)->get()->count();
+
+      if($data == 0){
+        DB::table('postlike')->insert([
+          'writer' =>$request->writer,
+          'post_num' => $request->post_num
+        ]);
+        DB::table('post')->where('post_num',$request->post_num)->increment('like', 1);
+
+      }
+      else{
+        DB::table('postlike')->where('writer',$request->writer)->where('post_num',$request->post_num)->delete();
+        DB::table('post')->where('post_num',$request->post_num)->decrement('like', 1);
+      }
+
+      return 0;
     }
   }
