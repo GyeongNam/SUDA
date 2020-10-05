@@ -116,7 +116,7 @@ class PostController extends Controller
     }
     public function post_reply(Request $request){//댓글달기
       $now = new DateTime;
-      return $now->format('yy-m-d H:i');
+      
 
       //대댓글
       if(!$request->comment_num==null){
