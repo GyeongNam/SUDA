@@ -39,21 +39,23 @@ class PostController extends Controller
   }
 
   public function up_post(Request $request){      // 게시글 수정 화면 데이터 바인딩 함수
-    $post_num = $request->input('post_num');
-    $data = Post::select('*')->where(['post_num'=>$post_num])->first();
+    // return 0;
+    $post_num = $request->post_num;
+    // return $request;
+    $data = Post::select('*')->where(['post_num'=>$post_num])->get();
 
-    if(count($data) > 0){      // 해당 게시글 번호에 대한 글이 있다면
-      $Kategorie = $data->Kategorie;
-      $Title = $data->Title;
-      $Text = $data->Text;
-      $image = $data->image;
-      $message = 1;      // 데이터 가져오기 성공
-    }
-    else {
-      $message = 0;      // 데이터를 가져올것이 없어 실패
-    }
+    // if(count($data) > 0){      // 해당 게시글 번호에 대한 글이 있다면
+    //   $Kategorie = $data->Kategorie;
+    //   $Title = $data->Title;
+    //   $Text = $data->Text;
+    //   $image = $data->image;
+    //   $message = 1;      // 데이터 가져오기 성공
+    // }
+    // else {
+    //   $message = 0;      // 데이터를 가져올것이 없어 실패
+    // }
 
-    return $message;
+    return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
   }
 
   public function update_post(Request $request){      // 게시글 업데이트 함수
@@ -116,7 +118,7 @@ class PostController extends Controller
     }
     public function post_reply(Request $request){//댓글달기
       $now = new DateTime;
-      
+
 
       //대댓글
       if(!$request->comment_num==null){
