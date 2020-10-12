@@ -61,7 +61,7 @@ class PostController extends Controller
   public function update_post(Request $request){      // 게시글 업데이트 함수
     $post_num = $request->input('post_num');
     $data = Post::select('*')->where(['post_num'=>$post_num])->first();
-
+    return $data;
     if(count($data) > 0){      // 해당 게시글 번호에 대한 글이 있다면
       if($request->hasFile('image')){
         $image = $request->file('image');
@@ -87,19 +87,8 @@ class PostController extends Controller
   }
 
   public function delete_post(Request $request){    // 게시글 비활성화 함수
-    $post_num = $request->input('post_num');
-    $data = Post::select('*')->where(['post_num'=>$post_num])->first();
-
-    if(count($data) > 0){      // 해당 게시글 번호에 대한 글이 있다면
-      Post::where(['post_num'=> $post_num])->update([
-        'post_activation' => 0]);
-        // $message = 1;      // 업데이트하고 성공
-      }
-      // else {
-      //   $message = 0;     // 업데이트 할것이 없어 실패
-      // }
-      //
-      // return $message;
+    DB::table('post')->where('post_num',$request->post_num)->update(['post_activation' => 0]);
+    return 0;
     }
 
     public function post_detail(Request $request){    // 상세 글 조회
