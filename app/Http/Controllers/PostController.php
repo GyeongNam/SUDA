@@ -93,13 +93,13 @@ class PostController extends Controller
     if(count($data) > 0){      // 해당 게시글 번호에 대한 글이 있다면
       Post::where(['post_num'=> $post_num])->update([
         'post_activation' => 0]);
-        $message = 1;      // 업데이트하고 성공
+        // $message = 1;      // 업데이트하고 성공
       }
-      else {
-        $message = 0;     // 업데이트 할것이 없어 실패
-      }
-
-      return $message;
+      // else {
+      //   $message = 0;     // 업데이트 할것이 없어 실패
+      // }
+      //
+      // return $message;
     }
 
     public function post_detail(Request $request){    // 상세 글 조회
