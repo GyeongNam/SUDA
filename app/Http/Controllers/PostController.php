@@ -20,7 +20,7 @@ class PostController extends Controller
       Image::make($image)->save(public_path('/img/'.$picture));
     }
     else {
-      $image = null;
+      $picture = null;
     }
 
     $post = new Post([
@@ -59,24 +59,31 @@ class PostController extends Controller
   }
 
   public function update_post(Request $request){      // 게시글 업데이트 함수
-    $post_num = $request->input('post_num');
-    $data = Post::select('*')->where(['post_num'=>$post_num])->first();
-    return $data;
-    if(count($data) > 0){      // 해당 게시글 번호에 대한 글이 있다면
+    $post_num = $request->post_num;
+    $data = Post::select('*')->where('post_num',$post_num)->get();
+    // return 0;
+// return $request;
+    if(true){      // 해당 게시글 번호에 대한 글이 있다면
+      // return $request;
       if($request->hasFile('image')){
         $image = $request->file('image');
         $picture= $image->getClientOriginalName();
         Image::make($image)->save(public_path('/img/'.$picture));
+        Post::where('post_num', $post_num)->update([
+          'Kategorie' => $request->kategorie,
+          'Title' => $request->Title,
+          'Text' => $request->Text,
+          'image' => $picture
+        ]);
       }
       else {
-        $image = $data->image;
+        Post::where('post_num', $post_num)->update([
+          'Kategorie' => $request->kategorie,
+          'Title' => $request->Title,
+          'Text' => $request->Text,
+        ]);
       }
-      Post::where(['post_num'=> $post_num])->update([
-        'Kategorie' => $request->input('Kategorie'),
-        'Title' => $request->input('Title'),
-        'Text' => $request->input('Text'),
-        'image' => $image
-      ]);
+
       $message = 1;     // 업데이트하고 성공
     }
     else {
