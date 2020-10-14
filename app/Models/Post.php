@@ -17,6 +17,7 @@ class Post extends Model
     	'image',
     	'like',
     	'post_activation',
-    	'writer'
+    	'writer',
+      'categorie_num'
     ];
 }

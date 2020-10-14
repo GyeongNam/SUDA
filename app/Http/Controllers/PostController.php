@@ -13,7 +13,7 @@ use DateTime;
 class PostController extends Controller
 {
   public function add_post(Request $request){   // 게시글 추가 함수
-    // return 0;
+    // return $request;
     if($request->hasFile('image')){
       $image = $request->file('image');
       $picture= $image->getClientOriginalName();
@@ -24,7 +24,7 @@ class PostController extends Controller
     }
 
     $post = new Post([
-      'Kategorie' => $request->kategorie,
+      'categorie_num' => $request->categorie+1,
       'Title' => $request->Title,
       'Text' => $request->Text,
       'image' => $picture,
@@ -45,7 +45,7 @@ class PostController extends Controller
     $data = Post::select('*')->where(['post_num'=>$post_num])->get();
 
     // if(count($data) > 0){      // 해당 게시글 번호에 대한 글이 있다면
-    //   $Kategorie = $data->Kategorie;
+    //   $categorie = $data->categorie;
     //   $Title = $data->Title;
     //   $Text = $data->Text;
     //   $image = $data->image;
@@ -70,7 +70,6 @@ class PostController extends Controller
         $picture= $image->getClientOriginalName();
         Image::make($image)->save(public_path('/img/'.$picture));
         Post::where('post_num', $post_num)->update([
-          'Kategorie' => $request->kategorie,
           'Title' => $request->Title,
           'Text' => $request->Text,
           'image' => $picture
@@ -78,7 +77,6 @@ class PostController extends Controller
       }
       else {
         Post::where('post_num', $post_num)->update([
-          'Kategorie' => $request->kategorie,
           'Title' => $request->Title,
           'Text' => $request->Text,
         ]);
@@ -171,12 +169,13 @@ class PostController extends Controller
       return 0;
     }
     public function board_list(Request $request){
-      $Kategorie = preg_replace("/\s+/","",$request->kategorie);
-      if($Kategorie=="내가쓴글"){
+      $categorie = $request->categorie;
+      $mypost = preg_replace("/\s+/","",$request->mypost);
+      if($mypost=="내가쓴글"){
         $data = DB::table('post')->where('writer',$request->userid)->get();
         return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);;
       }
-      $data = DB::table('post')->where('Kategorie',$Kategorie)->get();
+      $data = DB::table('post')->where('categorie_num',$categorie)->get();
       return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
 
     }
@@ -197,5 +196,9 @@ class PostController extends Controller
       }
 
       return 0;
+    }
+    public function get_categorie(){
+      $data = DB::table('categorie')->get();
+      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
     }
   }

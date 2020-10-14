@@ -56,3 +56,5 @@ Route::post('/post_rereply', [PostController::class, 'post_rereply']);
 Route::post('/del_reply', [PostController::class, 'del_reply']);// 댓글 삭제
 Route::post('/board_list', [PostController::class, 'board_list']);//게시판 리스트
 Route::post('/post_like', [PostController::class, 'post_like']); //게시글 좋아요
+Route::get('/get_categorie', [PostController::class, 'get_categorie']);
+Route::get('/get_categorie_list', [UserController::class, 'get_categorie_list']);
