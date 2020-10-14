@@ -61,6 +61,7 @@ class PostController extends Controller
 
   public function update_post(Request $request){      // 게시글 업데이트 함수
     $post_num = $request->post_num;
+    // return $request;
     $data = Post::select('*')->where('post_num',$post_num)->get();
     // return 0;
 // return $request;
@@ -71,17 +72,19 @@ class PostController extends Controller
         $picture= $image->getClientOriginalName();
         Image::make($image)->save(public_path('/img/'.$picture));
         Post::where('post_num', $post_num)->update([
-          'categorie_num' =>$request->categorie,
+          'categorie_num' => $request->categorie,
           'Title' => $request->Title,
           'Text' => $request->Text,
           'image' => $picture
         ]);
       }
       else {
+        $picture = null;
         Post::where('post_num', $post_num)->update([
-          'categorie_num' =>$request->categorie,
+          'categorie_num' => $request->categorie,
           'Title' => $request->Title,
           'Text' => $request->Text,
+          'image' => $picture
         ]);
       }
 
