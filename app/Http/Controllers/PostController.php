@@ -42,7 +42,8 @@ class PostController extends Controller
     // return 0;
     $post_num = $request->post_num;
     // return $request;
-    $data = Post::select('*')->where(['post_num'=>$post_num])->get();
+    $data = Post::select('*')->where(['post_num'=>$post_num])
+    ->join('categorie','post.categorie_num','categorie.categorie_num')->get();
 
     // if(count($data) > 0){      // 해당 게시글 번호에 대한 글이 있다면
     //   $categorie = $data->categorie;
@@ -70,6 +71,7 @@ class PostController extends Controller
         $picture= $image->getClientOriginalName();
         Image::make($image)->save(public_path('/img/'.$picture));
         Post::where('post_num', $post_num)->update([
+          'categorie_num' =>$request->categorie,
           'Title' => $request->Title,
           'Text' => $request->Text,
           'image' => $picture
@@ -77,6 +79,7 @@ class PostController extends Controller
       }
       else {
         Post::where('post_num', $post_num)->update([
+          'categorie_num' =>$request->categorie,
           'Title' => $request->Title,
           'Text' => $request->Text,
         ]);
