@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -22,6 +23,15 @@ class UserController extends Controller
     $data = DB::table('categorie')->get();
 
     return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+  }
+  public function get_logfile(Request $request){
+    if($request->hasfile('logfile')){
+      $file = $request->file('logfile');
+      $filename = $file->getClientOriginalName();
+      $file->move(public_path('/log/'),$filename);
+      return 1;
+    }
+    return 0;
   }
 
 }
