@@ -25,10 +25,13 @@ class UserController extends Controller
     return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
   }
   public function get_logfile(Request $request){
+    $androidid = $request->androidid;
+    $datea = date("y-m-d-H-s");
+
     if($request->hasfile('logfile')){
       $file = $request->file('logfile');
       $filename = $file->getClientOriginalName();
-      $file->move(public_path('/log/'),$filename);
+      $file->move(public_path('/log/'), $datea."_".$androidid.$filename);
       return 1;
     }
     return 0;
