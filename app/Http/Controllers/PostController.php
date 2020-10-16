@@ -182,10 +182,10 @@ class PostController extends Controller
     $categorie = $request->categorie;
     $mypost = preg_replace("/\s+/","",$request->mypost);
     if($mypost=="내가쓴글"){
-      $data = DB::table('post')->where('writer',$request->userid)->where('post_activation',1)->get();
+      $data = DB::table('post')->where('writer',$request->userid)->where('post_activation',1)->orderBy('desc')->get();
       return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);;
     }
-    $data = DB::table('post')->where('categorie_num',$categorie)->where('post_activation',1)->get();
+    $data = DB::table('post')->where('categorie_num',$categorie)->where('post_activation',1)->orderBy('desc')->get();
     return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
 
   }
