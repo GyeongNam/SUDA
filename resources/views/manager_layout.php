@@ -12,6 +12,7 @@
   <!-- 기본 경로 지정  ex) localhost/template/vendor/fontawesome-free/css/all.min.css -->
   <base href="/template/"/>
   <!-- Title -->
+  {{-- Title --}}
   <title>@yield('title')</title>
 
 
