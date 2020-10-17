@@ -8,13 +8,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-
-  <title>SB Admin 2 - Dashboard</title>
-
-  {{-- 기본 경로 지정  ex) localhost/template/vendor/fontawesome-free/css/all.min.css--}}
+  <!-- 기본 경로 지정  ex) localhost/template/vendor/fontawesome-free/css/all.min.css -->
   <base href="/template/"/>
 
-  <title>중고땅땅-관리자페이지</title>
+  <title>SUDA 통계 페이지</title>
 
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -343,7 +340,7 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            <h1 class="h3 mb-0 text-gray-800">SUDA 통계</h1>
             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
           </div>
 
@@ -357,7 +354,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">회원 수</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">2400명</div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -373,8 +370,8 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Earnings (Annual)</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">게시글 수</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">5,575건</div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -390,10 +387,10 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks</div>
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">사진 업로드 수</div>
                       <div class="row no-gutters align-items-center">
                         <div class="col-auto">
-                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">3,600건</div>
                         </div>
                         <div class="col">
                           <div class="progress progress-sm mr-2">

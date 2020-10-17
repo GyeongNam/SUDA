@@ -348,14 +348,14 @@
               <!-- Area Chart -->
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">전체 게시물 증가 수</h6>
                 </div>
                 <div class="card-body">
                   <div class="chart-area">
                     <canvas id="myAreaChart"></canvas>
                   </div>
                   <hr>
-                  Styling for the area chart can be found in the <code>/js/demo/chart-area-demo.js</code> file.
+                  전체 게시물의 월별 증가 현황을 보여주는 차트표 <code>/js/demo/chart-area-demo.js</code> file.
                 </div>
               </div>
 
@@ -380,7 +380,7 @@
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">게시판별 게시물 현황</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -388,7 +388,7 @@
                     <canvas id="myPieChart"></canvas>
                   </div>
                   <hr>
-                  Styling for the donut chart can be found in the <code>/js/demo/chart-pie-demo.js</code> file.
+                  게시판별 게시물 현황을 파이형식 차트로 나타낸 부분 <code>/js/demo/chart-pie-demo.js</code> file.
                 </div>
               </div>
             </div>

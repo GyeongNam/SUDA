@@ -7,11 +7,11 @@ var ctx = document.getElementById("myPieChart");
 var myPieChart = new Chart(ctx, {
   type: 'doughnut',
   data: {
-    labels: ["Direct", "Referral", "Social"],
+    labels: ["자유게시판", "일상게시판", "비밀게시판", "뻘글게시판", "컴퓨터게시판", "최진웅", "CCIT"],
     datasets: [{
-      data: [55, 30, 15],
-      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+      data: [1050, 553, 640, 357, 530, 470],
+      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#6956a4','#fbf232','#f62973'],
+      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#59498c','#dbcd14','#b60e4a'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",
     }],
   },
