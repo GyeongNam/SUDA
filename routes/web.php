@@ -66,3 +66,4 @@ Route::post('/board_list', [PostController::class, 'board_list']);//게시판 �
 Route::post('/post_like', [PostController::class, 'post_like']); //게시글 좋아요
 Route::get('/get_categorie', [PostController::class, 'get_categorie']);
 Route::get('/get_categorie_list', [UserController::class, 'get_categorie_list']);
+Route::post('/get_logfile', [UserController::class, 'get_logfile']); // 로그파일 저장
