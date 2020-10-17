@@ -45,6 +45,14 @@ Route::post('/login', [LoginController::class, 'Login']); //로그인
 Route::post('/idcheck', [Sign_upController::class, 'idcheck']); //로그인
 Route::post('/signup', [Sign_upController::class, 'signup']);  //회원가입
 
+//통계 페이지
+Route::get('/manager', function(){
+  return view('manager');
+});
+Route::get('/PostCharts', function(){
+  return view('PostCharts');
+});
+
 Route::post('/add_post', [PostController::class, 'add_post']);        // 게시글 추가
 Route::post('/up_post', [PostController::class, 'up_post']);       // 게시글 수정을 위한 데이터 바인딩
 Route::post('/update_post', [PostController::class, 'update_post']);    // 게시글 수정
