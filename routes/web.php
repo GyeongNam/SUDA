@@ -58,6 +58,9 @@ Route::get('/manager_layout', function(){
 Route::get('/manager_page',function(){
   return view('manager_page');
 });
+Route::get('/PostList', function(){
+  return view('PostList');
+});
 
 Route::post('/add_post', [PostController::class, 'add_post']);        // 게시글 추가
 Route::post('/up_post', [PostController::class, 'up_post']);       // 게시글 수정을 위한 데이터 바인딩
