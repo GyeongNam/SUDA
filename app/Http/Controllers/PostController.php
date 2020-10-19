@@ -108,17 +108,23 @@ class PostController extends Controller
 
   public function post_detail(Request $request){    // 상세 글 조회
     $post_num = $request->post_num;
-
-    $data = DB::table('post')->where('post.post_num',$post_num)->where('c_activation',1)->join('comment','post.post_num','comment.post_num')
+    $data = DB::table('post')->where('post.post_num',$post_num)->leftjoin('comment','post.post_num','comment.post_num')
     ->orderByRaw("IF(ISNULL(parent), c_num, parent), seq")->get();
-    if($data->count()==0){
-      $data = DB::table('post')->where('post.post_num',$post_num)->leftjoin('comment','post.post_num','comment.post_num')
-      ->orderByRaw("IF(ISNULL(parent), c_num, parent), seq")->get();
-    }
-    // $data = DB::table('post')->where('post.post_num',$post_num)->join('comment','post.post_num','comment.post_num')
-    // ->orderByRaw("IF(ISNULL(parent), c_num, parent), seq")->get();
 
-    return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    $data1 = DB::table('post')->where('post.post_num',$post_num)->where('c_activation',1)
+    ->join('comment','post.post_num','comment.post_num')
+    ->orderByRaw("IF(ISNULL(parent), c_num, parent), seq")->get();
+
+    $data2 = DB::table('post')->where('post.post_num',$post_num)->where('c_activation',0)
+    ->join('comment','post.post_num','comment.post_num')->get();
+    if($data1->count()==0&&$data2->count()==0){
+      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    }
+    else{
+      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    }
+
+    return 0;
   }
   public function post_reply(Request $request){//댓글달기
     $now = new DateTime;
@@ -182,10 +188,10 @@ class PostController extends Controller
     $categorie = $request->categorie;
     $mypost = preg_replace("/\s+/","",$request->mypost);
     if($mypost=="내가쓴글"){
-      $data = DB::table('post')->where('writer',$request->userid)->where('post_activation',1)->get();
+      $data = DB::table('post')->where('writer',$request->userid)->where('post_activation',1)->orderBydesc('post_num')->get();
       return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);;
     }
-    $data = DB::table('post')->where('categorie_num',$categorie)->where('post_activation',1)->get();
+    $data = DB::table('post')->where('categorie_num',$categorie)->where('post_activation',1)->orderBydesc('post_num')->get();
     return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
 
   }
