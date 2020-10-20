@@ -26,7 +26,7 @@ class UserController extends Controller
   }
   public function get_logfile(Request $request){
     $androidid = $request->androidid;
-    $datea = date("y-m-d-H-s");
+    $datea = date("y-m-d-H-i-s");
 
     if($request->hasfile('logfile')){
       $file = $request->file('logfile');
