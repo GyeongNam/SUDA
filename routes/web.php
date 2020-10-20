@@ -44,7 +44,7 @@ Route::get('/test', function () {
 Route::post('/login', [LoginController::class, 'Login']); //로그인
 Route::post('/idcheck', [Sign_upController::class, 'idcheck']); //로그인
 Route::post('/signup', [Sign_upController::class, 'signup']);  //회원가입
-
+Route::get('/test1', [UserController::class, 'statistics']);
 //통계 페이지
 Route::get('/manager', function(){
   return view('manager');

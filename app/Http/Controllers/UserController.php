@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use File;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -35,6 +36,52 @@ class UserController extends Controller
       return 1;
     }
     return 0;
+  }
+  public function statistics(){
+    $data = (File::allFiles(public_path('log')));
+    // return $data;
+
+    for($i = 0; $i < count($data); $i++){
+      $array[] = $data[$i]->getFilename();
+      $data1[] =  File::get(public_path('/log/'.$array[$i]));
+    }
+    for($i = 0; $i < count($data1); $i++){
+      $log[] = preg_split('/\/|\n/',$data1[$i]);
+    }
+
+
+    // 시간
+    for($j =0; $j <count($log);$j++){
+      for($i = 0; $i <(count($log[$j])-1)/4;$i++){
+        $date[] = $log[$j][$i*4];
+      }
+      //crud
+      for($i = 1; $i <(count($log[$j])-1);$i+=4){
+        $crud[] = $log[$j][$i];
+      }
+
+      //location
+      for($i = 2; $i <(count($log[$j])-1);$i+=4){
+        $location[] = $log[$j][$i];
+      }
+      //key
+      for($i = 3; $i <(count($log[$j])-1);$i+=4){
+        $key[] = $log[$j][$i];
+      }
+    }
+    //오늘
+    $today_visitors = array_count_values($location)["login"];
+
+    $datecount = 0;
+    // 월별
+    for($i=0;$i<count($date);$i++){
+      $datecount += substr_count($date[$i],"2020-10");
+    }
+    return array_search("2020-10",$date);
+    return $datecount;
+
+
+    // return ;
   }
 
 }
