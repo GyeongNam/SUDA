@@ -38,6 +38,7 @@ class UserController extends Controller
     return 0;
   }
   public function statistics(){
+    $timestamp = strtotime(date("Y-m-d")."-1 days");
     $data = (File::allFiles(public_path('log')));
     // return $data;
 
@@ -66,22 +67,137 @@ class UserController extends Controller
       }
       //key
       for($i = 3; $i <(count($log[$j])-1);$i+=4){
-        $key[] = $log[$j][$i];
+        $key[] = trim($log[$j][$i]);
       }
     }
     //오늘
     $today_visitors = array_count_values($location)["login"];
+    //로그인 배열 방 번호
+    $today_visitors_key = array_keys($location,"login");
+    for($i=0;$i<count($today_visitors_key);$i++){
+      //$array1 = 로그인한 날짜
+      $array1[] = $date[$today_visitors_key[$i]];
+      //두번째 문자열엔 오늘 날짜 들어가야함
 
-    $datecount = 0;
-    // 월별
-    for($i=0;$i<count($date);$i++){
-      $datecount += substr_count($date[$i],"2020-10");
+      // return date("Y-m-d",$timestamp);
+      $today_strpos[] = (String)strpos($array1[$i],date("Y-m-d",$timestamp));
+      $month_strpos[] = (String)strpos($array1[$i],date("Y-m"));
     }
-    return array_search("2020-10",$date);
-    return $datecount;
 
 
+    //월간 방문자수
+
+    if(isset(array_count_values($today_strpos)["0"])){
+      //어제 방문자수
+      $yesterday_visitors_count = array_count_values($today_strpos)["0"];
+    }
+    else{
+
+      $yesterday_visitors_count = 0;
+    }
+    if(isset(array_count_values($month_strpos)["0"])){
+      //이번달 방문자수
+      $month_visitors_count = array_count_values($month_strpos)["0"];
+    }
+    else{
+      $month_visitors_count = 0;
+    }
+    $error_index = array_keys($key,"com.android.volley.error.NetworkError");
+    for($i=0;$i<count($error_index);$i++){
+      $error_date[] = $date[$error_index[$i]];
+
+      $today_error_strpos[] = (String)strpos($error_date[$i],date("Y-m-d",$timestamp));
+      $month_error_strpos[] = (String)strpos($error_date[$i],date("Y-m"));
+
+    }
+    if(isset(array_count_values($today_error_strpos)["0"])){
+      //어제 에러
+      $yesterday_error_count = array_count_values($today_error_strpos)["0"];
+    }
+    else{
+
+      $yesterday_error_count = 0;
+    }
+    if(isset(array_count_values($month_error_strpos)["0"])){
+      //이번달 에러
+      $month_error_count = array_count_values($month_error_strpos)["0"];
+    }
+    else{
+      $month_error_count = 0;
+    }
+    //자주들어가는 게시판 찾기
+    $board_visit = array_keys($location,"PostdetailActivity");
+    for($i=0;$i<count($board_visit);$i++){
+      $board_visit_where[] = $key[$board_visit[$i]];
+      $post_number_condition[] = is_numeric($board_visit_where[$i]);
+      //게시판 방문 시간
+      $post_visitor_date[] = $date[$board_visit[$i]];
+
+    }
+    $i_want_true = array_keys($post_number_condition,true);
+    for($i=0;$i<count($i_want_true);$i++){
+      //게시판 찾기
+      $post_number[] = $board_visit_where[$i_want_true[$i]];
+      //방문 게시판 시간
+      $post1[] =  $post_visitor_date[$i_want_true[$i]];
+      //어제 게시판 시간 판별
+      $today_post_strpos[] = (String)strpos($post1[$i],date("Y-m-d",$timestamp));
+      //한달 게시판 시간 판별
+      $month_post_strpos[] = (String)strpos($post1[$i],date("Y-m"));
+
+    }
+    //어제 방문게시판 키
+    $yesterday_visitors_key = array_keys($today_post_strpos,"0");
+    //이번달 방문게시판 키
+    $month_visitors_key = array_keys($month_post_strpos,"0");
+    for($i=0;$i<count($yesterday_visitors_key);$i++){
+      $yesterday_post_key[] = $post_number[$yesterday_visitors_key[$i]];
+      //어제 방문게시판 통계
+      $yesterday_visitors_board[] = DB::table('post')->select('categorie')->where('post_num',$yesterday_post_key[$i])
+      ->join('categorie','post.categorie_num','categorie.categorie_num')->get();
+
+    }
+    for($i=0;$i<count($month_visitors_key);$i++){
+      $month_post_key[] = $post_number[$month_visitors_key[$i]];
+      $month_visitors_board[] = DB::table('post')->select('categorie')->where('post_num',$month_post_key[$i])
+      ->join('categorie','post.categorie_num','categorie.categorie_num')->get();
+    }
+    if(isset(array_count_values($today_post_strpos)["0"])){
+      //어제 방문 게시판 통계
+      $today_post_count = array_count_values($today_post_strpos)["0"];
+    }
+    else{
+      $today_post_count = 0;
+    }
+    if(isset(array_count_values($month_post_strpos)["0"])){
+      //이번달 방문게시판 통계
+      $month_post_count = array_count_values($month_post_strpos)["0"];
+    }
+    else{
+      $month_post_count = 0;
+    }
+    return compact("yesterday_visitors_count","month_visitors_count","yesterday_error_count","month_error_count","yesterday_visitors_board","month_visitors_board");
+
+    //
+    // $datecount = 0;
+    // // 월별
+    // for($i=0;$i<count($date);$i++){
+    //   $datecount += substr_count($date[$i],"2020-10");
+    //   //10월 로그
+    //   $month_date []= strpos($date[$i],"2020-10");
+    // }
+    // if(strpos($date[0],"2020-10-20") !==false){
+    //   return "참";
+    // }
+    // else{
+    //   return "거짓";
+    // }
+    // return 0;
+    // return array_search("2020-10",$date);
+    // return $datecount;
     // return ;
   }
+
+
 
 }
