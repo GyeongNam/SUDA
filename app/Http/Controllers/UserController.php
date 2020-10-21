@@ -176,26 +176,8 @@ class UserController extends Controller
     else{
       $month_post_count = 0;
     }
-    return compact("yesterday_visitors_count","month_visitors_count","yesterday_error_count","month_error_count","yesterday_visitors_board","month_visitors_board");
 
-    //
-    // $datecount = 0;
-    // // 월별
-    // for($i=0;$i<count($date);$i++){
-    //   $datecount += substr_count($date[$i],"2020-10");
-    //   //10월 로그
-    //   $month_date []= strpos($date[$i],"2020-10");
-    // }
-    // if(strpos($date[0],"2020-10-20") !==false){
-    //   return "참";
-    // }
-    // else{
-    //   return "거짓";
-    // }
-    // return 0;
-    // return array_search("2020-10",$date);
-    // return $datecount;
-    // return ;
+    return view('manager',compact("yesterday_visitors_count","month_visitors_count","yesterday_error_count","month_error_count","yesterday_visitors_board","month_visitors_board"));
   }
 
 
