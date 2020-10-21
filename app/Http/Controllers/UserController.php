@@ -38,6 +38,7 @@ class UserController extends Controller
     return 0;
   }
   public function statistics(){
+    $categorie = DB::table('categorie')->get();
     $timestamp = strtotime(date("Y-m-d")."-1 days");
     $data = (File::allFiles(public_path('log')));
     // return $data;
@@ -176,8 +177,35 @@ class UserController extends Controller
     else{
       $month_post_count = 0;
     }
+    for($i=0;$i<count($yesterday_visitors_board);$i++){
+      $board_array[] =  $yesterday_visitors_board[$i][0]->categorie;
+    }
+    for($i=0;$i<count($categorie);$i++){
+      $categorie_for [] = $categorie[$i]->categorie;
+    }
+    for($i=0;$i<count($categorie_for);$i++){
+      if(isset(array_count_values($board_array)[$categorie_for[$i]])){
+        $yesterday_json_board[$categorie_for[$i]] = (array_count_values($board_array)[$categorie_for[$i]]);
+      }
+      else{
+        $yesterday_json_board[$categorie_for[$i]] = 0;
+      }
 
-    return view('manager',compact("yesterday_visitors_count","month_visitors_count","yesterday_error_count","month_error_count","yesterday_visitors_board","month_visitors_board"));
+    }
+    for($i=0;$i<count($month_visitors_board);$i++){
+      $board_array1[] =  $month_visitors_board[$i][0]->categorie;
+    }
+    for($i=0;$i<count($categorie_for);$i++){
+      if(isset(array_count_values($board_array1)[$categorie_for[$i]])){
+        $month_json_board[$categorie_for[$i]] = (array_count_values($board_array1)[$categorie_for[$i]]);
+      }
+      else{
+        $month_json_board[$categorie_for[$i]] = 0;
+      }
+
+    }
+
+    return view('manager',compact("yesterday_visitors_count","month_visitors_count","yesterday_error_count","month_error_count","yesterday_json_board","month_json_board"));
   }
 
 
