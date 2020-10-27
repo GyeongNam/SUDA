@@ -108,6 +108,7 @@ class PostController extends Controller
 
   public function post_detail(Request $request){    // 상세 글 조회
     $post_num = $request->post_num;
+    $userinfo = $request->userinfo;
     $data = DB::table('post')->where('post.post_num',$post_num)->leftjoin('comment','post.post_num','comment.post_num')
     ->orderByRaw("IF(ISNULL(parent), c_num, parent), seq")->get();
 
@@ -117,11 +118,12 @@ class PostController extends Controller
 
     $data2 = DB::table('post')->where('post.post_num',$post_num)->where('c_activation',0)
     ->join('comment','post.post_num','comment.post_num')->get();
+    $comment_push = DB::table('comment_notification')->where('user_id',$userinfo)->where('post_num',$post_num)->get()->count();
     if($data1->count()==0&&$data2->count()==0){
-      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+      return json_encode(compact("data","comment_push"),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
     }
     else{
-      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+      return json_encode(compact("data","comment_push"),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
     }
 
     return 0;

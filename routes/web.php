@@ -7,6 +7,7 @@ use App\Http\Controllers\Sign_upController;
 use App\Http\Controllers\SMSController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\NotiController;
 use Illuminate\Http\Request;
 // use DateTime;
 
@@ -37,8 +38,8 @@ Route::get('/test', function () {
   $data = DB::table('post')->where('post.post_num',103)->join('comment','post.post_num','comment.post_num')
   ->orderByRaw("IF(ISNULL(parent), c_num, parent), seq")->get();
   $data2 = DB::table('comment')->get();
-  return $data2[0]->created_at;
-  return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+  // return $data2[0]->created_at;
+  return json_encode(compact("data","data2"),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
   // return urldecode(json_encode($test));
 });
 Route::post('/login', [LoginController::class, 'Login']); //로그인
@@ -73,3 +74,5 @@ Route::post('/post_like', [PostController::class, 'post_like']); //게시글 좋
 Route::get('/get_categorie', [PostController::class, 'get_categorie']);
 Route::get('/get_categorie_list', [UserController::class, 'get_categorie_list']);
 Route::post('/get_logfile', [UserController::class, 'get_logfile']); // 로그파일 저장
+
+Route::post('/comment_push', [NotiController::class, 'comment_push']);
