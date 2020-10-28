@@ -190,7 +190,7 @@ class PostController extends Controller
   public function board_list(Request $request){
     $categorie = $request->categorie;
     $mypost = preg_replace("/\s+/","",$request->mypost);
-    //최진웅
+    //저봐저 츤데레
 $pdata = DB::table('post_notification')->where('user_id',$request->userid)->where('categorie_num',$request->categorie)->get()->count();
 // return $pdata;
     //최진웅
