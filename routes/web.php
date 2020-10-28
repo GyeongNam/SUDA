@@ -8,6 +8,7 @@ use App\Http\Controllers\SMSController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\NotiController;
+use App\Http\Controllers\Listalarm;
 use Illuminate\Http\Request;
 // use DateTime;
 
@@ -76,3 +77,4 @@ Route::get('/get_categorie_list', [UserController::class, 'get_categorie_list'])
 Route::post('/get_logfile', [UserController::class, 'get_logfile']); // 로그파일 저장
 
 Route::post('/comment_push', [NotiController::class, 'comment_push']);
+Route::post('/alarm', [Listalarm::class, 'alarm']);
