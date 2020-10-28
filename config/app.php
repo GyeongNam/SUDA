@@ -163,6 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
 
+
         /*
          * Package Service Providers...
          */
@@ -175,7 +176,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        LaravelFCM\FCMServiceProvider::class,// fcm
         Intervention\Image\ImageServiceProvider::class // 이미지
     ],
 
@@ -228,7 +229,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Image' => Intervention\Image\Facades\Image::class      // 이미지
+        'Image' => Intervention\Image\Facades\Image::class,      // 이미지
+        'FCM'      => LaravelFCM\Facades\FCM::class,
+        	'FCMGroup' => LaravelFCM\Facades\FCMGroup::class, // Optional
 
     ],
 
