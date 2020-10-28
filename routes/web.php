@@ -10,6 +10,7 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\NotiController;
 use App\Http\Controllers\Listalarm;
 use App\Http\Controllers\FCMController;
+use App\Http\Controllers\boardController;
 use Illuminate\Http\Request;
 // use DateTime;
 
@@ -80,3 +81,5 @@ Route::post('/get_logfile', [UserController::class, 'get_logfile']); // 로그�
 Route::post('/comment_push', [NotiController::class, 'comment_push']);
 Route::post('/alarm', [Listalarm::class, 'alarm']);
 Route::get('/fcm', [FCMController::class, 'fcm']);
+
+Route::get('/fcm1', [boardController::class, 'bb_list']);

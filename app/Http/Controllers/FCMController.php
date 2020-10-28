@@ -12,21 +12,21 @@ use DB;
 class FCMController extends Controller
 {
     //
-    public function fcm(){
-      // $sql = "Select Token From users Where id = test";
-
-        $result = DB::table('users')->select("Token")->get();
+    static public function fcm($title, $body, $token){
         $tokens = array();
 
-        if(sizeof($result) > 0 ){
-            foreach ($result as $Rresult) {
+        if(sizeof($token) > 0 ){
+            foreach ($token as $Rresult) {
                 $tokens[] = $Rresult->Token;
             }
         }
 
         $myMessage = "새글이 등록되었습니다.";
 
-        $message = array("message" => $myMessage);
+        $message = array(
+          'title' => $title,
+          'body' => $body
+        );
 
         $url = 'https://fcm.googleapis.com/fcm/send';
         $fields = array(
