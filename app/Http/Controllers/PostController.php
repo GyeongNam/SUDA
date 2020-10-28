@@ -10,6 +10,7 @@ use App\Models\Recomment;
 use Image;
 use DB;
 use DateTime;
+use App\Http\Controllers\FCMController;
 
 class PostController extends Controller
 {
@@ -130,7 +131,9 @@ class PostController extends Controller
   }
   public function post_reply(Request $request){//댓글달기
     $now = new DateTime;
-
+    //게시글 작성자에게
+    $k = DB::table('post')->select('Token')->where('post_num',$request->post_num)->join('users','post.writer','users.id')->get();
+    $writer = DB::table('post')->select('writer')->where('post_num',$request->post_num)->get();
 
     //대댓글
     if(!$request->comment_num==null){
@@ -138,6 +141,10 @@ class PostController extends Controller
       $data = DB::table('comment')->where('parent',$request->comment_num)->orderBydesc('c_num')->get();
       $data1 = DB::table('comment')->where('parent',$request->comment_num)->get()->count(); // 대댓글 없을때
       // return $data1;
+      $a = DB::table('comment')->select('Token')->where('c_num',$request->comment_num)
+      ->join('users','comment.c_writer','users.id')->get();
+      $comment_writer = DB::table('comment')->where('c_num',$request->comment_num)->get();
+      //첫 대댓글 달때
       if($data1==0){
         Comment::insert([
           'comment' => $request->reply,
@@ -148,8 +155,13 @@ class PostController extends Controller
           'created_at' => $now->format('yy-m-d H:i:s'),
           'parent'=>$request->comment_num
         ]);
+        //!댓글 작성자 == 대댓글작성자
+        if($comment_writer[0]->c_writer!=$request->writer){
+          FCMController::fcm("내 댓글에 답글이 달렸습니다.",$request->reply, $a);
+        }
+
       }
-      // 대댓글 있을때
+      // 대댓글이 하나 이상 있을때
       else {
         Comment::insert([
           'comment' => $request->reply,
@@ -160,7 +172,12 @@ class PostController extends Controller
           'created_at' => $now->format('yy-m-d H:i:s'),
           'parent'=>$request->comment_num
         ]);
+        //!댓글 작성자 == 대댓글작성자
+        if($comment_writer[0]->c_writer!=$request->writer){
+          FCMController::fcm("내 댓글에 답글이 달렸습니다.",$request->reply, $a);
+          //대댓글 시퀀스
 
+        }
       }
 
     }
@@ -174,8 +191,13 @@ class PostController extends Controller
         'c_activation' =>1,
         'seq' => 1,
       ]);
-    }
+      //게시글 작성자에게 푸시알림
 
+    }
+    //!글 작성자 == 댓글작성자
+    if($writer[0]->writer != $request->writer){
+      FCMController::fcm("내 게시글에 댓글이 달렸습니다.",$request->reply, $k);
+    }
     return 0;
   }
   public function post_rereply(Request $request){
@@ -191,8 +213,8 @@ class PostController extends Controller
     $categorie = $request->categorie;
     $mypost = preg_replace("/\s+/","",$request->mypost);
     //저봐저 츤데레
-$pdata = DB::table('post_notification')->where('user_id',$request->userid)->where('categorie_num',$request->categorie)->get()->count();
-// return $pdata;
+    $pdata = DB::table('post_notification')->where('user_id',$request->userid)->where('categorie_num',$request->categorie)->get()->count();
+    // return $pdata;
     //최진웅
     if($mypost=="내가쓴글"){
       $data = DB::table('post')->where('writer',$request->userid)->where('post_activation',1)->orderBydesc('post_num')->get();
@@ -225,5 +247,9 @@ $pdata = DB::table('post_notification')->where('user_id',$request->userid)->wher
   public function get_categorie(){
     $data = DB::table('categorie')->get();
     return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+  }
+  public function test(){
+    $k = DB::table('users')->select('Token')->where('id','wlsdnd12')->get();
+    FCMController::fcm("내 게시글에 댓글이 달렸습니다.","이잉 기모", $k);
   }
 }
