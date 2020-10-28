@@ -186,17 +186,24 @@ class PostController extends Controller
     DB::table('comment')->where('c_num',$request->c_num)->update(['c_activation' => 0]);
     return 0;
   }
+
   public function board_list(Request $request){
     $categorie = $request->categorie;
     $mypost = preg_replace("/\s+/","",$request->mypost);
+    //최진웅
+$pdata = DB::table('post_notification')->where('user_id',$request->userid)->where('categorie_num',$request->categorie)->get()->count();
+// return $pdata;
+    //최진웅
     if($mypost=="내가쓴글"){
       $data = DB::table('post')->where('writer',$request->userid)->where('post_activation',1)->orderBydesc('post_num')->get();
-      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);;
+      return json_encode(compact("data","pdata"),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
     }
     $data = DB::table('post')->where('categorie_num',$categorie)->where('post_activation',1)->orderBydesc('post_num')->get();
-    return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    return json_encode(compact("data","pdata"),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
 
   }
+
+
   public function post_like(Request $request){
     $data = DB::table('postlike')->where('writer',$request->writer)->where('post_num',$request->post_num)->get()->count();
 
