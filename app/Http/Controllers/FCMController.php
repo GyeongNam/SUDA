@@ -15,7 +15,7 @@ class FCMController extends Controller
     public function fcm(){
       // $sql = "Select Token From users Where id = test";
 
-        $result = DB::table('users')->select("Token")->where('id','test')->get();
+        $result = DB::table('users')->select("Token")->get();
         $tokens = array();
 
         if(sizeof($result) > 0 ){
@@ -36,6 +36,7 @@ class FCMController extends Controller
 
         $headers = array(
                 'Authorization:key =' . 'AAAA9066qgY:APA91bE6OlNYEv2zXEIH7pfPwMElEKBZxK81i99QJ30gKu47Vt9Hc6jvDQxhD_RnSXD0V4AEkPyV_FkBUEMFahAuvUpgCpxzA9EoolMhgOaOf7FEHOKOJzRq3DF3QrNcSXkf8QnVsEdI'
+                ,'Content-Type:application/json'
                 );
 
         $ch = curl_init();
@@ -46,7 +47,7 @@ class FCMController extends Controller
         curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-
+        // return $fields;
         $result = curl_exec($ch);
         if ($result === FALSE) {
             die('Curl failed: ' . curl_error($ch));
