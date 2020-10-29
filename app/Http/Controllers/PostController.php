@@ -141,9 +141,15 @@ class PostController extends Controller
       $data = DB::table('comment')->where('parent',$request->comment_num)->orderBydesc('c_num')->get();
       $data1 = DB::table('comment')->where('parent',$request->comment_num)->get()->count(); // 대댓글 없을때
       // return $data1;
+      //댓글일 경우
       $a = DB::table('comment')->select('Token')->where('c_num',$request->comment_num)
       ->join('users','comment.c_writer','users.id')->get();
+      // 대댓글일 경우
+      $b = DB::table('comment')->select('Token')->where('c_num',$request->comment_num)->where('parent',$request->comment_num)->where('c_writer','!=',$request->writer)
+      ->join('users','comment.c_writer','users.id')->get()->unique('Token');
       $comment_writer = DB::table('comment')->where('c_num',$request->comment_num)->get();
+      $parent = DB::table('comment')->where('parent',$request->comment_num)->get();
+
       //첫 대댓글 달때
       if($data1==0){
         Comment::insert([
@@ -173,11 +179,7 @@ class PostController extends Controller
           'parent'=>$request->comment_num
         ]);
         //!댓글 작성자 == 대댓글작성자
-        if($comment_writer[0]->c_writer!=$request->writer){
-          FCMController::fcm("내 댓글에 답글이 달렸습니다.",$request->reply, $a);
-          //대댓글 시퀀스
-
-        }
+          FCMController::fcm("내 댓글에 답글이 달렸습니다.",$request->reply, $b);
       }
 
     }
@@ -192,12 +194,13 @@ class PostController extends Controller
         'seq' => 1,
       ]);
       //게시글 작성자에게 푸시알림
+      //!글 작성자 == 댓글작성자
+      if($writer[0]->writer != $request->writer){
+        FCMController::fcm("내 게시글에 댓글이 달렸습니다.",$request->reply, $k);
+      }
 
     }
-    //!글 작성자 == 댓글작성자
-    if($writer[0]->writer != $request->writer){
-      FCMController::fcm("내 게시글에 댓글이 달렸습니다.",$request->reply, $k);
-    }
+
     return 0;
   }
   public function post_rereply(Request $request){
@@ -249,7 +252,23 @@ class PostController extends Controller
     return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
   }
   public function test(){
-    $k = DB::table('users')->select('Token')->where('id','wlsdnd12')->get();
+    // $collection = collect([
+    //     ['brand' => 'Tesla',  'color' => 'red'],
+    //     ['brand' => 'Pagani', 'color' => 'white'],
+    //     ['brand' => 'Tesla',  'color' => 'black'],
+    //     ['brand' => 'Pagani', 'color' => 'orange'],
+    // ]);
+    //
+    // $plucked = $collection;
+    // return $plucked;
+    // ['Tesla' => 'black', 'Pagani' => 'orange']
+    $a = DB::table('comment')->get()->pluck('c_num','c_writer');
+    $k = DB::table('users')->where('id','wlsdnd12')->get();
+    $b = DB::table('comment')->select('Token')->where('parent',220)
+    ->join('users','comment.c_writer','users.id')->get()->unique('Token');
+    $b = DB::table('comment')->select('Token')->where('parent',220)->where('c_writer','!=','note91')
+    ->join('users','comment.c_writer','users.id')->get()->unique('Token');
+    return $b;
     FCMController::fcm("내 게시글에 댓글이 달렸습니다.","이잉 기모", $k);
   }
 }
