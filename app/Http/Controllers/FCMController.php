@@ -63,14 +63,14 @@ class FCMController extends Controller
       $id = $request->userid;
       $onoff = $request->onoff;
 
-    //  DB::table('users')->where('id',$id)->update(['push' => $onoff]);
+     DB::table('users')->where('id',$id)->update(['push' => $onoff]);
       return $request;
     }
 
     public function keywordadd(Request $request){
       $id = $request->userid;
       $text = $request->keyword;
-      
+
       DB::table('keyword')->insert([
         'userid' => $id,
         'text' => $text
@@ -80,6 +80,8 @@ class FCMController extends Controller
     }
 
     public function getkeyword(Request $request){
-      return $request;
+      $id =  $request->userid;
+      $data = DB::table('keyword')->select('*')->where('userid',$id)->get();
+      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
     }
 }

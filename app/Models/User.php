@@ -15,7 +15,7 @@ class User extends Authenticatable
       'id',
       'password',
     	'phone',
-      'user_activation'
+      'user_activation',
       'push'
     ];
 }
