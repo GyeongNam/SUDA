@@ -88,3 +88,4 @@ Route::get('/fcm1', [boardController::class, 'bb_list']);
 Route::post('/alsetting', [FCMController::class, 'alsetting']);
 Route::post('/keywordadd', [FCMController::class, 'keywordadd']);
 Route::post('/getkeyword', [FCMController::class, 'getkeyword']);
+Route::post('/removekeyword', [FCMController::class, 'removekeyword']);

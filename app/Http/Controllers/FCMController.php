@@ -70,18 +70,35 @@ class FCMController extends Controller
     public function keywordadd(Request $request){
       $id = $request->userid;
       $text = $request->keyword;
-
-      DB::table('keyword')->insert([
+      $ck = DB::table('keyword')->where([
         'userid' => $id,
-        'text' => $text
-      ]);
+        'text' =>$text
+      ])->get()->conunt();
 
-      return $request;
+      if($ck<1){
+        DB::table('keyword')->insert([
+          'userid' => $id,
+          'text' => $text
+        ]);
+      }
+      return $ck;
     }
 
     public function getkeyword(Request $request){
       $id =  $request->userid;
       $data = DB::table('keyword')->select('*')->where('userid',$id)->get();
       return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    }
+
+    public function removekeyword(Request $request){
+      $id = $request->userid;
+      $text = $request->keyword;
+
+      DB::table('keyword')->->where([
+        'userid' => $id,
+        'text' =>$text
+      ])->delete();
+
+      return $text."삭제";
     }
 }
