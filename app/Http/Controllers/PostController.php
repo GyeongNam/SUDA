@@ -26,6 +26,24 @@ class PostController extends Controller
       $picture = null;
     }
 
+    $keyword = DB::table('keyword')
+    ->where(['push'=>1])
+    ->join('users', 'users.id', '=', 'keyword.userid')
+    ->get();
+
+    foreach($keyword as $key => $value){
+      if(strpos($request->Title, $value->text) !== false) {
+        $token = DB::table('users')->select('Token')->where(['id'=>$value->id])->get();
+        FCMController::fcm("키워드와 관련된 글이 올라왔어요.",$request->Title, $token);
+
+      }
+      if(strpos($request->Text, $value->text) !== false) {
+        $token = DB::table('users')->select('Token')->where(['id'=>$value->id])->get();
+        FCMController::fcm("키워드와 관련된 글이 올라았어요.",$request->Title, $token);
+      }
+    }
+    return $keyword;
+
     $post = new Post([
       'categorie_num' => $request->categorie+1,
       'Title' => $request->Title,
@@ -36,22 +54,9 @@ class PostController extends Controller
     ]);
     $post->save();
 
-    $keyword = DB::table('keyword')
-    ->join('users', 'users.id', '=', 'keyword.userid')
-    ->where(['userid'=>$id, 'push'=>1 ])->get();
-
-    foreach($keyword as $key => $value){
-      if(strpos($request->Title, $value->text) !== false) {
-        FCMController::fcm("키워드와 관련된 글이 올라왔어요.",$request->Title, $keyword[$key]);
-      }
-      if(strpos($request->Title, $value->text) !== false) {
-        FCMController::fcm("키워드와 관련된 글이 올라았어요.",$request->Title, $keyword[$key]);
-      }
-    }
 
     $message = 1;     // 등록 성공
 
-    return $message;
   }
 
   public function up_post(Request $request){      // 게시글 수정 화면 데이터 바인딩 함수
