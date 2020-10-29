@@ -63,7 +63,7 @@ class FCMController extends Controller
       $id = $request->userid;
       $onoff = $request->onoff;
 
-     DB::table('users')->where('id',$id)->update(['push' => $onoff]);
+      DB::table('users')->where('id',$id)->update(['push' => $onoff]);
       return $request;
     }
 
@@ -73,7 +73,7 @@ class FCMController extends Controller
       $ck = DB::table('keyword')->where([
         'userid' => $id,
         'text' =>$text
-      ])->get()->conunt();
+      ])->get()->count();
 
       if($ck<1){
         DB::table('keyword')->insert([
@@ -86,7 +86,9 @@ class FCMController extends Controller
 
     public function getkeyword(Request $request){
       $id =  $request->userid;
-      $data = DB::table('keyword')->select('*')->where('userid',$id)->get();
+      $data = DB::table('keyword')
+      ->join('users', 'users.id', '=', 'keyword.userid')
+      ->where('userid',$id)->get();
       return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
     }
 
@@ -94,11 +96,11 @@ class FCMController extends Controller
       $id = $request->userid;
       $text = $request->keyword;
 
-      DB::table('keyword')->->where([
+      DB::table('keyword')->where([
         'userid' => $id,
-        'text' =>$text
+        'text' => $text
       ])->delete();
 
-      return $text."삭제";
+      return $request;
     }
 }
