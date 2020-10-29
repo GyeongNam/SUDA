@@ -132,7 +132,9 @@ class PostController extends Controller
   public function post_reply(Request $request){//댓글달기
     $now = new DateTime;
     //게시글 작성자에게
-    $k = DB::table('post')->select('Token')->where('post_num',$request->post_num)->join('users','post.writer','users.id')->get();
+    $k = DB::table('post')->select('Token')->where('post_num',$request->post_num)
+    ->where('push',1)
+    ->join('users','post.writer','users.id')->get();
     $writer = DB::table('post')->select('writer')->where('post_num',$request->post_num)->get();
 
     //대댓글
@@ -143,9 +145,14 @@ class PostController extends Controller
       // return $data1;
       //댓글일 경우
       $a = DB::table('comment')->select('Token')->where('c_num',$request->comment_num)
+      ->where('push',1)
+      ->where('c_activation',1)
       ->join('users','comment.c_writer','users.id')->get();
       // 대댓글일 경우
-      $b = DB::table('comment')->select('Token')->where('c_num',$request->comment_num)->where('parent',$request->comment_num)->where('c_writer','!=',$request->writer)
+      $b = DB::table('comment')->select('Token')->where('c_num',$request->comment_num)
+      ->where('parent',$request->comment_num)->where('c_writer','!=',$request->writer)
+      ->where('push',1)
+      ->where('c_activation',1)
       ->join('users','comment.c_writer','users.id')->get()->unique('Token');
       $comment_writer = DB::table('comment')->where('c_num',$request->comment_num)->get();
       $parent = DB::table('comment')->where('parent',$request->comment_num)->get();
@@ -262,13 +269,16 @@ class PostController extends Controller
     // $plucked = $collection;
     // return $plucked;
     // ['Tesla' => 'black', 'Pagani' => 'orange']
-    $a = DB::table('comment')->get()->pluck('c_num','c_writer');
+    // $a = DB::table('comment')->get()->pluck('c_num','c_writer');
+    $a = DB::table('comment')->select('Token')->where('c_num',220)->where('push',1)
+    ->join('users','comment.c_writer','users.id')->get();
     $k = DB::table('users')->where('id','wlsdnd12')->get();
     $b = DB::table('comment')->select('Token')->where('parent',220)
     ->join('users','comment.c_writer','users.id')->get()->unique('Token');
     $b = DB::table('comment')->select('Token')->where('parent',220)->where('c_writer','!=','note91')
     ->join('users','comment.c_writer','users.id')->get()->unique('Token');
-    return $b;
-    FCMController::fcm("내 게시글에 댓글이 달렸습니다.","이잉 기모", $k);
+    // return $a;
+    FCMController::fcm("내 게시글에 댓글이 달렸습니다.","이잉 기모", $a);
+    return 0;
   }
 }
