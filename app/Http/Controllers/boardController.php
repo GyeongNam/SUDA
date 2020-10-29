@@ -38,7 +38,7 @@ class boardController extends Controller
 
     public function bb_list(Request $request){    // 뻘글게시판
       //use App\Http\Controllers\FCMController;
-      $k = DB::table('users')->select('Token')->get();
+      $k = DB::table('users')->select('Token')->where('id','jo123')->get();
 
       FCMController::fcm("바보", "쵲니웅", $k);
     }

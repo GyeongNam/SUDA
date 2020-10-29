@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
+use App\Models\User;
 use FCM;
 use DB;
 
@@ -55,5 +56,30 @@ class FCMController extends Controller
         curl_close($ch);
 
         echo $result;
+    }
+
+    public function alsetting(Request $request){
+
+      $id = $request->userid;
+      $onoff = $request->onoff;
+
+    //  DB::table('users')->where('id',$id)->update(['push' => $onoff]);
+      return $request;
+    }
+
+    public function keywordadd(Request $request){
+      $id = $request->userid;
+      $text = $request->keyword;
+      
+      DB::table('keyword')->insert([
+        'userid' => $id,
+        'text' => $text
+      ]);
+
+      return $request;
+    }
+
+    public function getkeyword(Request $request){
+      return $request;
     }
 }
