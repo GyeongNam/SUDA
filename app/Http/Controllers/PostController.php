@@ -36,6 +36,19 @@ class PostController extends Controller
     ]);
     $post->save();
 
+    $keyword = DB::table('keyword')
+    ->join('users', 'users.id', '=', 'keyword.userid')
+    ->where(['userid'=>$id, 'push'=>1 ])->get();
+
+    foreach($keyword as $key => $value){
+      if(strpos($request->Title, $value->text) !== false) {
+        FCMController::fcm("키워드와 관련된 글이 올라왔어요.",$request->Title, $keyword[$key]);
+      }
+      if(strpos($request->Title, $value->text) !== false) {
+        FCMController::fcm("키워드와 관련된 글이 올라았어요.",$request->Title, $keyword[$key]);
+      }
+    }
+
     $message = 1;     // 등록 성공
 
     return $message;
