@@ -12,6 +12,7 @@ use DB;
 use DateTime;
 use App\Http\Controllers\FCMController;
 
+
 class PostController extends Controller
 {
   public function add_post(Request $request){   // 게시글 추가 함수
@@ -149,11 +150,17 @@ class PostController extends Controller
       ->where('c_activation',1)
       ->join('users','comment.c_writer','users.id')->get();
       // 대댓글일 경우
-      $b = DB::table('comment')->select('Token')->where('c_num',$request->comment_num)
-      ->where('parent',$request->comment_num)->where('c_writer','!=',$request->writer)
+      $variable = $request->comment_num;
+      $b = DB::table('comment')->select('Token')
+      ->where(function($q) use ($variable){
+        $q->where('c_num',$variable)
+        ->orWhere('parent',$variable);
+      })
+      ->where('c_writer','!=',$request->writer)
       ->where('push',1)
       ->where('c_activation',1)
       ->join('users','comment.c_writer','users.id')->get()->unique('Token');
+      // return $b;
       $comment_writer = DB::table('comment')->where('c_num',$request->comment_num)->get();
       $parent = DB::table('comment')->where('parent',$request->comment_num)->get();
 
@@ -186,7 +193,7 @@ class PostController extends Controller
           'parent'=>$request->comment_num
         ]);
         //!댓글 작성자 == 대댓글작성자
-          FCMController::fcm("내 댓글에 답글이 달렸습니다.",$request->reply, $b);
+        FCMController::fcm("내 댓글에 답글이 달렸습니다.",$request->reply, $b);
       }
 
     }
@@ -273,11 +280,27 @@ class PostController extends Controller
     $a = DB::table('comment')->select('Token')->where('c_num',220)->where('push',1)
     ->join('users','comment.c_writer','users.id')->get();
     $k = DB::table('users')->where('id','wlsdnd12')->get();
-    $b = DB::table('comment')->select('Token')->where('parent',220)
+    // $b = DB::table('comment')->select('Token')->where('parent',220)
+    // ->join('users','comment.c_writer','users.id')->get()->unique('Token');
+    // DB::enableQueryLog();
+    $b = DB::table('comment')
+    ->select('Token')
+    ->where(function($q){
+      $q->where('c_num', 391)
+      ->orWhere('parent', 391);
+    })
+    ->where('c_writer','!=','admin')
+    ->where('push',1)
+    ->where('c_activation',1)
     ->join('users','comment.c_writer','users.id')->get()->unique('Token');
-    $b = DB::table('comment')->select('Token')->where('parent',220)->where('c_writer','!=','note91')
-    ->join('users','comment.c_writer','users.id')->get()->unique('Token');
-    // return $a;
+
+
+
+    // where(function($q) use ($variable){
+    //       $q->where('Cab', 2)
+    //         ->orWhere('Cab', $variable);
+    //   })
+    return $b;
     FCMController::fcm("내 게시글에 댓글이 달렸습니다.","이잉 기모", $a);
     return 0;
   }
