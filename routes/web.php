@@ -46,6 +46,7 @@ Route::get('/test', function () {
   // return urldecode(json_encode($test));
 });
 Route::post('/login', [LoginController::class, 'Login']); //로그인
+Route::post('/logout', [LoginController::class, 'logout']); //로그인
 Route::post('/idcheck', [Sign_upController::class, 'idcheck']); //로그인
 Route::post('/signup', [Sign_upController::class, 'signup']);  //회원가입
 //통계 페이지
