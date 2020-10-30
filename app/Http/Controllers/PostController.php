@@ -42,7 +42,7 @@ class PostController extends Controller
         FCMController::fcm("키워드와 관련된 글이 올라았어요.",$request->Title, $token);
       }
     }
-    return $keyword;
+  
 
     $post = new Post([
       'categorie_num' => $request->categorie+1,
