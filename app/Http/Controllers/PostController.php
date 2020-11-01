@@ -16,7 +16,7 @@ use App\Http\Controllers\FCMController;
 class PostController extends Controller
 {
   public function add_post(Request $request){   // 게시글 추가 함수
-    // return $request;
+    // return $request->file('image');
     if($request->hasFile('image')){
       $image = $request->file('image');
       $picture= $image->getClientOriginalName();
@@ -42,7 +42,7 @@ class PostController extends Controller
         FCMController::fcm("키워드와 관련된 글이 올라았어요.",$request->Title, $token);
       }
     }
-  
+
 
     $post = new Post([
       'categorie_num' => $request->categorie+1,
@@ -157,7 +157,7 @@ class PostController extends Controller
     $writer = DB::table('post')->select('writer')->where('post_num',$request->post_num)->get();
 
     //대댓글
-    if(!$request->comment_num==null){
+    if($request->comment_num!="null"){
       //대댓글 없을때
       $data = DB::table('comment')->where('parent',$request->comment_num)->orderBydesc('c_num')->get();
       $data1 = DB::table('comment')->where('parent',$request->comment_num)->get()->count(); // 대댓글 없을때
