@@ -47,7 +47,6 @@ class PostController extends Controller
     ->where(['push'=>1])
     ->join('users', 'users.id', '=', 'post_notification.user_id')
     ->get();
-
     // return $board;
     foreach ($board as $key => $value) {
       // return $request;
