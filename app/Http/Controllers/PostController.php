@@ -47,15 +47,14 @@ class PostController extends Controller
     ->where(['push'=>1])
     ->join('users', 'users.id', '=', 'post_notification.user_id')
     ->get();
-    return $board;
+    // return $board;
     foreach ($board as $key => $value) {
-      // code...
-      //$categorie = DB::table('categorie')->select('categorie')->where('categorie_num', $value->categorie_num)->get();
-      if ($request->categorie_num == $value->categorie_num) {
-
+      // return $request;
+      $categorie = DB::table('categorie')->select('categorie')->where('categorie_num', $value->categorie_num)->get();
+      if ($request->categorie+1 == $value->categorie_num) {
         $token = DB::table('users')->select('Token')->where(['id'=>$value->id])->get();
         //return $token;
-        FCMController::fcm($categorie."에 글이 올라왔어요.",$request->Title, $token);
+        FCMController::fcm($categorie[0]->categorie."에 글이 올라왔어요.",$request->Title, $token);
       }
     }
 
