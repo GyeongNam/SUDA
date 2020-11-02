@@ -34,12 +34,15 @@ class PostController extends Controller
     foreach($keyword as $key => $value){
       if(strpos($request->Title, $value->text) !== false) {
         $token = DB::table('users')->select('Token')->where(['id'=>$value->id])->get();
-        FCMController::fcm("키워드와 관련된 글이 올라왔어요.",$request->Title, $token);
-
+        if ($value->id != $request->writer) {
+          FCMController::fcm("키워드와 관련된 글이 올라왔어요.",$request->Title, $token);
+        }
       }
       if(strpos($request->Text, $value->text) !== false) {
         $token = DB::table('users')->select('Token')->where(['id'=>$value->id])->get();
-        FCMController::fcm("키워드와 관련된 글이 올라았어요.",$request->Title, $token);
+        if ($value->id != $request->writer) {
+          FCMController::fcm("키워드와 관련된 글이 올라았어요.",$request->Title, $token);
+        }
       }
     }
 
@@ -54,7 +57,9 @@ class PostController extends Controller
       if ($request->categorie+1 == $value->categorie_num) {
         $token = DB::table('users')->select('Token')->where(['id'=>$value->id])->get();
         //return $token;
-        FCMController::fcm($categorie[0]->categorie."에 글이 올라왔어요.",$request->Title, $token);
+        if ($value->id != $request->writer) {
+          FCMController::fcm($categorie[0]->categorie."에 글이 올라왔어요.",$request->Title, $token);
+        }
       }
     }
 
