@@ -43,6 +43,18 @@ class PostController extends Controller
       }
     }
 
+    $board = DB::table('post_notification')
+    ->where(['push'=>1])
+    ->join('users', 'users.id', '=', 'post_notification.user_id')
+    ->get();
+    foreach ($board as $key => $value) {
+      // code...
+      if ($request->categorie==$value->categorie_num) {
+        $categorie = DB::table('categorie')->select('categorie')->where('categorie_num', $value->categorie_num)->get();
+        $token = DB::table('users')->select('Token')->where(['id'=>$value->id])->get();
+        FCMController::fcm($categorie."에 글이 올라왔어요.",$request->Title, $token);
+      }
+    }
 
     $post = new Post([
       'categorie_num' => $request->categorie+1,
@@ -133,7 +145,7 @@ class PostController extends Controller
     $comment = DB::table('comment')->where('post_num',$post_num)
     ->orderByRaw("IF(ISNULL(parent), c_num, parent), seq")->get();
     $data = DB::table('post')->where('post_num',$post_num)->get();
-    
+
     $comment_push = DB::table('comment_notification')->where('user_id',$userinfo)->where('post_num',$post_num)->get()->count();
     return json_encode(compact("data","comment","comment_push"),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
   }
