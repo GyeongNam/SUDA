@@ -176,7 +176,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        
+        App\Providers\BroadcastServiceProvider::class,
+
         LaravelFCM\FCMServiceProvider::class,// fcm
         Intervention\Image\ImageServiceProvider::class // 이미지
     ],
