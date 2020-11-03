@@ -27,7 +27,7 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/chartEvent', function(){
-	broadcast(new \App\Events\chartEvent())
+	broadcast(new \App\Events\chartEvent());
 	return "return값은 없어도 상관없음.";
 });
 

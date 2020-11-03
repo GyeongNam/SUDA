@@ -26,3 +26,18 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+//for Echo
+import Echo from 'laravel-echo';
+window.io = require('socket.io-client');
+
+// 접속정보
+window.Echo = new Echo({
+    broadcaster: 'socket.io',
+    host: 'http://localhost:6001',
+});
+
+// redis채널설정
+window.Echo.channel('channel')
+    .listen('chartEvent', (e) => {
+        console.log(e);
+    });
