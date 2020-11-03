@@ -27,7 +27,7 @@ class PostController extends Controller
     }
 
     $keyword = DB::table('keyword')
-    ->where(['push'=>1])
+    ->where(['pushkeyword'=>1])
     ->join('users', 'users.id', '=', 'keyword.userid')
     ->get();
 
@@ -44,7 +44,7 @@ class PostController extends Controller
     }
 
     $board = DB::table('post_notification')
-    ->where(['push'=>1])
+    ->where(['pushboard'=>1])
     ->join('users', 'users.id', '=', 'post_notification.user_id')
     ->get();
     // return $board;
@@ -79,17 +79,6 @@ class PostController extends Controller
     // return $request;
     $data = Post::select('*')->where(['post_num'=>$post_num])
     ->join('categorie','post.categorie_num','categorie.categorie_num')->get();
-
-    // if(count($data) > 0){      // 해당 게시글 번호에 대한 글이 있다면
-    //   $categorie = $data->categorie;
-    //   $Title = $data->Title;
-    //   $Text = $data->Text;
-    //   $image = $data->image;
-    //   $message = 1;      // 데이터 가져오기 성공
-    // }
-    // else {
-    //   $message = 0;      // 데이터를 가져올것이 없어 실패
-    // }
 
     return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
   }
@@ -155,7 +144,7 @@ class PostController extends Controller
     $now = new DateTime;
     //게시글 작성자에게
     $k = DB::table('post')->select('Token')->where('post_num',$request->post_num)
-    ->where('push',1)
+    ->where('pushcomment',1)
     ->join('users','post.writer','users.id')->get();
     $writer = DB::table('post')->select('writer')->where('post_num',$request->post_num)->get();
 
@@ -167,7 +156,7 @@ class PostController extends Controller
       // return $data1;
       //댓글일 경우
       $a = DB::table('comment')->select('Token')->where('c_num',$request->comment_num)
-      ->where('push',1)
+      ->where('pushcomment',1)
       ->where('c_activation',1)
       ->join('users','comment.c_writer','users.id')->get();
       // 대댓글일 경우
@@ -178,7 +167,7 @@ class PostController extends Controller
         ->orWhere('parent',$variable);
       })
       ->where('c_writer','!=',$request->writer)
-      ->where('push',1)
+      ->where('pushcomment',1)
       ->where('c_activation',1)
       ->join('users','comment.c_writer','users.id')->get()->unique('Token');
       // return $b;
@@ -298,7 +287,7 @@ class PostController extends Controller
     // return $plucked;
     // ['Tesla' => 'black', 'Pagani' => 'orange']
     // $a = DB::table('comment')->get()->pluck('c_num','c_writer');
-    $a = DB::table('comment')->select('Token')->where('c_num',220)->where('push',1)
+    $a = DB::table('comment')->select('Token')->where('c_num',220)->where('pushcomment',1)
     ->join('users','comment.c_writer','users.id')->get();
     $k = DB::table('users')->where('id','wlsdnd12')->get();
     // $b = DB::table('comment')->select('Token')->where('parent',220)
@@ -311,7 +300,7 @@ class PostController extends Controller
       ->orWhere('parent', 391);
     })
     ->where('c_writer','!=','admin')
-    ->where('push',1)
+    ->where('pushcomment',1)
     ->where('c_activation',1)
     ->join('users','comment.c_writer','users.id')->get()->unique('Token');
 

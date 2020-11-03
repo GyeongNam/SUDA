@@ -15,7 +15,10 @@ class Sign_upController extends Controller
        'id' => $request->id,
        'password' => bcrypt($request ->password),
        'phone'=> $request -> phone,
-       'user_activation' => 1
+       'user_activation' => 1,
+       'pushkeyword' => 1,
+       'pushboard'=> 1,
+       'pushcomment'=> 1
     ]);
     $users->save();
 

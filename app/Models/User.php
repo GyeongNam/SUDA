@@ -16,6 +16,8 @@ class User extends Authenticatable
       'password',
     	'phone',
       'user_activation',
-      'push'
+      'pushkeyword',
+      'pushboard',
+      'pushcomment'
     ];
 }
