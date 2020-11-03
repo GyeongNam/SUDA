@@ -28,7 +28,12 @@ use Illuminate\Http\Request;
 
 Route::get('/chartEvent', function(){
 	broadcast(new \App\Events\chartEvent());
-	return "return값은 없어도 상관없음.";
+	echo "<script src ='js/app.js'></script>";
+	// echo "<script type='text/javascript'>";
+	// echo "window.Echo.channel('ccit')
+  //     .listen('WebsocketEvent', (e) => {
+  //       console.log(e); });";
+	// echo "</script>";
 });
 
 Route::get('/', function () {

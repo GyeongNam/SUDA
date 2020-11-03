@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 class chartEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
+    public $message;
     /**
      * Create a new event instance.
      *
@@ -21,7 +21,7 @@ class chartEvent implements ShouldBroadcast
      */
     public function __construct()
     {
-        //
+        $message = "웹소켓 확인";
     }
 
     /**
@@ -31,7 +31,7 @@ class chartEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new Channel('ccit');
     }
     public function broadcastWith()
     {

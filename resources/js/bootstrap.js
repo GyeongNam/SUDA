@@ -37,7 +37,8 @@ window.Echo = new Echo({
 });
 
 // redis채널설정
-window.Echo.channel('channel')
+window.Echo.channel('laravel_database_ccit')
     .listen('chartEvent', (e) => {
         console.log(e);
+        console.log("뭐지");
     });
