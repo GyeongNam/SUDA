@@ -34,11 +34,13 @@ window.io = require('socket.io-client');
 window.Echo = new Echo({
     broadcaster: 'socket.io',
     host: 'http://localhost:6001',
+    // encrypted: false,
+    // disableStats: false
 });
 
 // redis채널설정
 window.Echo.channel('laravel_database_ccit')
     .listen('chartEvent', (e) => {
         console.log(e);
-        console.log("뭐지");
+        
     });

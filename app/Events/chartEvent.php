@@ -21,7 +21,7 @@ class chartEvent implements ShouldBroadcast
      */
     public function __construct()
     {
-        $message = "웹소켓 확인";
+        $this->message = "웹소켓 확인";
     }
 
     /**
@@ -33,10 +33,10 @@ class chartEvent implements ShouldBroadcast
     {
         return new Channel('ccit');
     }
-    public function broadcastWith()
-    {
-      return [
-        "message" => "hello world",
-      ];
-    }
+    // public function broadcastWith()
+    // {
+    //   return [
+    //     "message" => "hello world",
+    //   ];
+    // }
 }

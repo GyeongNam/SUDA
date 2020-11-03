@@ -34,6 +34,7 @@ Route::get('/chartEvent', function(){
   //     .listen('WebsocketEvent', (e) => {
   //       console.log(e); });";
 	// echo "</script>";
+
 });
 
 Route::get('/', function () {
