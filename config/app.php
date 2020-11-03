@@ -234,7 +234,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,      // 이미지
         'FCM'      => LaravelFCM\Facades\FCM::class,
         'FCMGroup' => LaravelFCM\Facades\FCMGroup::class, // Optional
-        'phpredis' => Illuminate\Support\Facades\Redis::class,
+        
     ],
 
 ];
