@@ -16,7 +16,7 @@ class UserController extends Controller
     $alluserdata = DB::table('post')->where('post_activation',1)->join('categorie','post.categorie_num','categorie.categorie_num')->orderBydesc('post_num')->get();
     // $postlist = json_encode(DB데이터 들어가야함,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
     $jsondata = json_encode($alluserdata,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);//jsondata 쉽게 만들기
-
+    //return '1';
     return $jsondata;
 
   }
