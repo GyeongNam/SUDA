@@ -62,8 +62,17 @@ class FCMController extends Controller
 
       $id = $request->userid;
       $onoff = $request->onoff;
+      $key = $request->key;
 
-      DB::table('users')->where('id',$id)->update(['push' => $onoff]);
+      if( $key == "k"){
+        DB::table('users')->where('id',$id)->update(['pushkeyword' => $onoff]);
+      }
+      elseif ($key == "b") {
+        DB::table('users')->where('id',$id)->update(['pushboard' => $onoff]);
+      }
+      elseif ($key == "c") {
+        DB::table('users')->where('id',$id)->update(['pushcomment' => $onoff]);
+      }
       return $request;
     }
 
@@ -89,7 +98,8 @@ class FCMController extends Controller
       $data = DB::table('keyword')
       ->join('users', 'users.id', '=', 'keyword.userid')
       ->where('userid',$id)->get();
-      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+      $push = DB::table('users')->where('id',$id)->get();
+      return json_encode(compact("data", "push"),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
     }
 
     public function removekeyword(Request $request){
