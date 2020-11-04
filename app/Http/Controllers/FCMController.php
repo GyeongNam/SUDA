@@ -113,4 +113,11 @@ class FCMController extends Controller
 
       return $request;
     }
+
+    public function chart(Request $request){
+      $id1 = $request->id1;
+      $id2 = $request->id2;
+      $me = $request->me;
+      broadcast(new \App\Events\chartEvent($id1, $id2, $me));
+    }
 }

@@ -24,6 +24,17 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('/chartEvent',[FCMController::class, 'chart']);
+
+	// echo "<script src ='js/app.js'></script>";
+	// echo "<script type='text/javascript'>";
+	// echo "window.Echo.channel('ccit')
+  //     .listen('WebsocketEvent', (e) => {
+  //       console.log(e); });";
+	// echo "</script>";
+
+
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });

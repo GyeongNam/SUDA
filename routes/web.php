@@ -27,8 +27,8 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/chartEvent', function(){
-	broadcast(new \App\Events\chartEvent());
-	echo "<script src ='js/app.js'></script>";
+	broadcast(new \App\Events\chartEvent("보내는 사람", "받는 사람", "메시지"));
+	// echo "<script src ='js/app.js'></script>";
 	// echo "<script type='text/javascript'>";
 	// echo "window.Echo.channel('ccit')
   //     .listen('WebsocketEvent', (e) => {
