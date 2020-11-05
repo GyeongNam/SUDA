@@ -39,9 +39,13 @@ class chartEvent implements ShouldBroadcast
     }
     public function broadcastWith()
     {
+
+      
+
       return [
-        "message" => "hello world",
-        "socket1" => "그런거 없다",
+        "message" => $this->message,
+        "user1" => $this->id1,
+        "user2" => $this->id2
       ];
     }
 }
