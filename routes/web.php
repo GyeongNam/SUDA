@@ -26,16 +26,8 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('/chartEvent', function(Request $request){
-	broadcast(new \App\Events\chartEvent($request->user1, $request->user2, $request->sendmsg));
-	// echo "<script src ='js/app.js'></script>";
-	// echo "<script type='text/javascript'>";
-	// echo "window.Echo.channel('ccit')
-  //     .listen('WebsocketEvent', (e) => {
-  //       console.log(e); });";
-	// echo "</script>";
+Route::post('/chartEvent', [SMSController::class, 'chatting']);
 
-});
 
 Route::get('/', function () {
   return view('welcome');

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use DB;
 class SMSController extends Controller
 {
     function SendMessage(Request $request){
@@ -82,6 +82,27 @@ class SMSController extends Controller
         return $rMsg[0];
         // return response()->json(['data'=>$rMsg]);
         // $message = 1;
+    }
+
+    function chatting(Request $request){
+
+      // echo "<script src ='js/app.js'></script>";
+      // echo "<script type='text/javascript'>";
+      // echo "window.Echo.channel('ccit')
+      //     .listen('WebsocketEvent', (e) => {
+      //       console.log(e); });";
+      // echo "</script>";
+      $myid = $request->user1;
+        $id = $request->user2;
+        $message = $request->sendmsg;
+
+        DB::table('chat_list')->insert([
+           'message' => $message,
+           'user_1' => $myid,
+           'user_2' => $id
+        ]);
+        broadcast(new \App\Events\chartEvent($request->user1, $request->user2, $request->sendmsg));
+        return $request;
     }
 
 }
