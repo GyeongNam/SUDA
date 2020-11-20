@@ -92,7 +92,7 @@ class SMSController extends Controller
       //     .listen('WebsocketEvent', (e) => {
       //       console.log(e); });";
       // echo "</script>";
-      $myid = $request->user1;
+        $myid = $request->user1;
         $id = $request->user2;
         $message = $request->sendmsg;
 
@@ -103,6 +103,55 @@ class SMSController extends Controller
         ]);
         broadcast(new \App\Events\chartEvent($request->user1, $request->user2, $request->sendmsg));
         return $request;
+    }
+
+    public function search(Request $request){
+      // $data = DB::table('users')
+      // ->where('id', 'LIKE', '%'.$request->user2.'%')
+      // ->where('users.id',"!=",$request->user1)
+      // ->get();
+      // $data2 = DB::table('follow')->where('f_user_id','=', $request->user1);
+      // return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+   $data = DB::table('users')->where('id','LIKE','%'.$request->user2.'%')->select('id')->where('id','!=',$request->user1)->get();
+   $data1 = DB::table('follow')->where('f_user_id', $request->user1)->get();
+   // return $data1;
+   // return $data1[1]->follow;
+   $xml_data=json_encode($data);
+   $xml_data=json_decode($xml_data,true);
+   // return $xml_data[0]['id'];
+   // $a=0;
+   for($i=0;$i<count($data1);$i++){
+      for($x=0;$x<count($xml_data);$x++){
+         if($xml_data[$x]['id']==$data1[$i]->follow){
+            $xml_data[$x]['follow'] = $data1[$i]->follow;
+         }
+      }
+
+   }
+   $a=0;
+   for($i=0;$i<count($xml_data);$i++){
+      if(!array_key_exists('follow', $xml_data[$i])){
+         $xml_data[$i]['follow'] = "null";
+         $a++;
+      }
+   }
+   return json_encode($xml_data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    }
+
+    public function follows(Request $request){
+      $id1 = $request->user1;
+      $id2 = $request->user2;
+      $data = DB::table('follow')->where('f_user_id', $id1)->where('follow', $id2)->get()->count();
+      if($data == 0) {
+        DB::table('follow')->insert([
+          'f_user_id' => $id1,
+          'follow' => $id2
+          ]);
+      }
+      else {
+        DB::table('follow')->where('f_user_id', $id1)->where('follow', $id2)->delete();
+      }
+        return $data;
     }
 
 }
