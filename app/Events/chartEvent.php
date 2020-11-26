@@ -14,18 +14,18 @@ class chartEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $message;
-    public $id1;
-    public $id2;
+    public $user;
+    public $channel;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($id1 , $id2, $m)
+    public function __construct($user , $channel, $m)
     {
         $this->message = $m;
-        $this->id1 = $id1;
-        $this->id2 = $id2;
+        $this->user = $user;
+        $this->channel = $channel;
     }
 
     /**
@@ -35,7 +35,7 @@ class chartEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('ccit');
+        return new Channel($this->channel);
     }
     // public function broadcastWith()
     // {

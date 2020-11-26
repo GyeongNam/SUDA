@@ -32,6 +32,9 @@ Route::post('/follows', [SMSController::class, 'follows']);
 Route::post('/unfollow', [SMSController::class, 'unfollow']);
 Route::post('/friendlist', [SMSController::class, 'friendlist']);
 
+Route::post('/getroom', [SMSController::class, 'getroom']);
+
+
 Route::get('/', function () {
   return view('welcome');
 });
