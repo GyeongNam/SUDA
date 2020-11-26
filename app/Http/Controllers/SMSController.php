@@ -154,4 +154,10 @@ class SMSController extends Controller
         return $data;
     }
 
+    public function friendlist(Request $request) {
+      $id1 = $request->user1;
+      $data = DB::table('follow')->where('f_user_id', $request->user1)->get();
+      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    }
+
 }

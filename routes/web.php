@@ -30,7 +30,7 @@ Route::post('/chartEvent', [SMSController::class, 'chatting']);
 Route::post('/search', [SMSController::class, 'search']);
 Route::post('/follows', [SMSController::class, 'follows']);
 Route::post('/unfollow', [SMSController::class, 'unfollow']);
-
+Route::post('/friendlist', [SMSController::class, 'friendlist']);
 
 Route::get('/', function () {
   return view('welcome');
