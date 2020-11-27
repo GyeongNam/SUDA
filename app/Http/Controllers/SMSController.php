@@ -108,36 +108,13 @@ class SMSController extends Controller
   }
 
   public function search(Request $request){
-    // $data = DB::table('users')
-    // ->where('id', 'LIKE', '%'.$request->user2.'%')
-    // ->where('users.id',"!=",$request->user1)
-    // ->get();
-    // $data2 = DB::table('follow')->where('f_user_id','=', $request->user1);
-    // return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
-    $data = DB::table('users')->where('id','LIKE','%'.$request->user2.'%')->select('id')->where('id','!=',$request->user1)->get();
-    $data1 = DB::table('follow')->where('f_user_id', $request->user1)->get();
-    // return $data1;
-    // return $data1[1]->follow;
-    $xml_data=json_encode($data);
-    $xml_data=json_decode($xml_data,true);
-    // return $xml_data[0]['id'];
-    // $a=0;
-    for($i=0;$i<count($data1);$i++){
-      for($x=0;$x<count($xml_data);$x++){
-        if($xml_data[$x]['id']==$data1[$i]->follow){
-          $xml_data[$x]['follow'] = $data1[$i]->follow;
-        }
-      }
-
-    }
-    $a=0;
-    for($i=0;$i<count($xml_data);$i++){
-      if(!array_key_exists('follow', $xml_data[$i])){
-        $xml_data[$i]['follow'] = "null";
-        $a++;
-      }
-    }
-    return json_encode($xml_data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    $data = DB::select("SELECT
+    id,follow
+    FROM
+    (SELECT * FROM CCIT_SUDA.users WHERE id LIKE '%$request->user2%' AND id !='$request->user1') AS A
+    LEFT OUTER JOIN follow AS B
+    ON B.f_user_id='$request->user1' AND A.id = B.follow;");
+    return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
   }
 
   public function follows(Request $request){
