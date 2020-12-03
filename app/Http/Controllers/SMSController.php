@@ -172,7 +172,7 @@ class SMSController extends Controller
   }
 
   public function getroom(Request $request){
-
+    $id =$request->
     $room = $request->roomname;
     $data = preg_replace("/\s+/", "",$request->key);
     $data = str_replace('[','',$data);
@@ -188,6 +188,7 @@ class SMSController extends Controller
         DB::table('chat_room')->insert([
           'user' => $data[$key],
           'chat_room' => $idx,
+          'room_name' => $room
         ]);
       }
       $redata = DB::table('chat_room')->where('chat_room',$idx)->get();
