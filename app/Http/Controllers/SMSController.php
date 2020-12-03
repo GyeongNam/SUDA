@@ -170,7 +170,29 @@ class SMSController extends Controller
 
     return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
   }
+
   public function getroom(Request $request){
+
+    $room = $request->roomname;
+    $data = preg_replace("/\s+/", "",$request->key);
+    $data = str_replace('[','',$data);
+    $data = str_replace(']','',$data);
+    $data = explode(',', $data);
+
+    if(count($data)>1){
+      $idx = DB::table('room_idx')->insertGetId([
+        "nothing" => ""
+      ]);
+
+      foreach($data as $key => $value){
+        DB::table('chat_room')->insert([
+          'user' => $data[$key],
+          'chat_room' => $idx,
+        ]);
+      }
+      $redata = DB::table('chat_room')->where('chat_room',$idx)->get();
+    }
+    return $redata;
     // if(){
     //
     //
