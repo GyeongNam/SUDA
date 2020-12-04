@@ -33,7 +33,7 @@ Route::post('/unfollow', [SMSController::class, 'unfollow']);
 Route::post('/friendlist', [SMSController::class, 'friendlist']);
 
 Route::post('/getroom', [SMSController::class, 'getroom']);
-
+Route::post('/echoroom', [SMSController::class, 'echoroom']);
 
 Route::get('/', function () {
   return view('welcome');

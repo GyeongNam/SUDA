@@ -200,15 +200,9 @@ class SMSController extends Controller
       $redata = DB::table('chat_room')->where('chat_room',$idx)->get();
     }
     return $redata;
-    // if(){
-    //
-    //
-    // }
-    //
-    // DB::table('chat_room')->insert([
-    //   'user' => $request->userinfo,
-    //   'chat_room' => 만드러줭ㅁ
-    // ]);
   }
-
+  public function echoroom(Request $request){
+    $data = DB::table('chat_room')->where('user', $request->userinfo)->get();
+    return $data;
+  }
 }
