@@ -158,7 +158,7 @@ class SMSController extends Controller
     else {
       DB::table('follow')->where('f_user_id', $id1)->where('follow', $id2)->delete();
     }
-    return $data;
+    return $data.",".$idx;
   }
 
   public function friendlist(Request $request) {
