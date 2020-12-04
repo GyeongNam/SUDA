@@ -156,6 +156,7 @@ class SMSController extends Controller
       }
     }
     else {
+      $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
       DB::table('follow')->where('f_user_id', $id1)->where('follow', $id2)->delete();
     }
     return $data.",".$idx[0]->room_idx;
