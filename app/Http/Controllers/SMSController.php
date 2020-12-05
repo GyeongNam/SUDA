@@ -122,18 +122,32 @@ class SMSController extends Controller
     $id2 = $request->user2;
     $date = new DateTime();
     $data = DB::table('follow')->where('f_user_id', $id1)->where('follow', $id2)->get()->count();
+    //팔로우 되어있는지 체크 0은 안되어잇음을 나타냄
     if($data == 0) {
       $data3 = DB::table('follow')->where('f_user_id', $id2)->where('follow', $id1)->get()->count();
+      //서로 팔로우가 안되어있을때
       if($data3<1){
-        $idx = DB::table('room_idx')->insertGetId([
+        $room_idx = DB::table('room_idx')->insertGetId([
           "nothing" => ""
         ]);
         DB::table('follow')->insert([
           'f_user_id' => $id1,
           'follow' => $id2,
-          'room_idx' => $idx
+          'room_idx' => $room_idx
+        ]);
+        $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
+
+        DB::table('chat_room')->insert([
+          'user' => $id1,
+          'chat_room' => $room_idx,
+        ]);
+
+        DB::table('chat_room')->insert([
+          'user' => $id2,
+          'chat_room' => $room_idx
         ]);
       }
+      //한쪽은 팔로우가 되어있을
       else{
         $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id2)->where('follow', $id1)->get();
         DB::table('follow')->insert([
@@ -143,21 +157,14 @@ class SMSController extends Controller
         ]);
       }
 
-      if($data3<1){
-          DB::table('chat_room')->insert([
-            'user' => $id1,
-            'chat_room' => $idx,
-          ]);
 
-          DB::table('chat_room')->insert([
-            'user' => $id2,
-            'chat_room' => $idx
-          ]);
-      }
+
+
     }
     else {
       $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
       DB::table('follow')->where('f_user_id', $id1)->where('follow', $id2)->delete();
+      DB::table('chat_room')->where('chat_room',$idx[0]->room_idx)->delete();
     }
     return $data.",".$idx[0]->room_idx;
   }
