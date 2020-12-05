@@ -109,108 +109,112 @@ class SMSController extends Controller
 
   public function search(Request $request){
     $data = DB::select("SELECT
-    id,follow
-    FROM
-    (SELECT * FROM CCIT_SUDA.users WHERE id LIKE '%$request->user2%' AND id !='$request->user1') AS A
-    LEFT OUTER JOIN follow AS B
-    ON B.f_user_id='$request->user1' AND A.id = B.follow;");
-    return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
-  }
+      id,follow
+      FROM
+      (SELECT * FROM CCIT_SUDA.users WHERE id LIKE '%$request->user2%' AND id !='$request->user1') AS A
+      LEFT OUTER JOIN follow AS B
+      ON B.f_user_id='$request->user1' AND A.id = B.follow;");
+      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    }
 
-  public function follows(Request $request){
-    $id1 = $request->user1;
-    $id2 = $request->user2;
-    $date = new DateTime();
-    $data = DB::table('follow')->where('f_user_id', $id1)->where('follow', $id2)->get()->count();
-    //팔로우 되어있는지 체크 0은 안되어잇음을 나타냄
-    if($data == 0) {
+    public function follows(Request $request){
+      $id1 = $request->user1;
+      $id2 = $request->user2;
+      $date = new DateTime();
+      $data = DB::table('follow')->where('f_user_id', $id1)->where('follow', $id2)->get()->count();
       $data3 = DB::table('follow')->where('f_user_id', $id2)->where('follow', $id1)->get()->count();
-      //서로 팔로우가 안되어있을때
-      if($data3<1){
-        $room_idx = DB::table('room_idx')->insertGetId([
+      //팔로우 되어있는지 체크 0은 안되어잇음을 나타냄
+      if($data == 0) {
+
+        //서로 팔로우가 안되어있을때
+        if($data3<1){
+          $room_idx = DB::table('room_idx')->insertGetId([
+            "nothing" => ""
+          ]);
+          DB::table('follow')->insert([
+            'f_user_id' => $id1,
+            'follow' => $id2,
+            'room_idx' => $room_idx
+          ]);
+          $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
+
+          DB::table('chat_room')->insert([
+            'user' => $id1,
+            'chat_room' => $room_idx,
+          ]);
+
+          DB::table('chat_room')->insert([
+            'user' => $id2,
+            'chat_room' => $room_idx
+          ]);
+        }
+        //한쪽은 팔로우가 되어있을
+        else{
+          $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id2)->where('follow', $id1)->get();
+          DB::table('follow')->insert([
+            'f_user_id' => $id1,
+            'follow' => $id2,
+            'room_idx' => $idx[0]->room_idx
+          ]);
+        }
+
+
+
+
+      }
+      else {
+        $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
+        DB::table('follow')->where('f_user_id', $id1)->where('follow', $id2)->delete();
+        if($data3<1){
+          DB::table('chat_room')->where('chat_room',$idx[0]->room_idx)->delete();
+        }
+
+      }
+      return $data.",".$idx[0]->room_idx;
+    }
+
+    public function friendlist(Request $request) {
+      $id1 = $request->user1;
+      $data = DB::table('follow')->where('f_user_id', $request->user1)->get();
+
+      // $data2 = DB::table('chat_room')->where('user', $request->user1)->select('chat_room')->get();
+
+
+      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+    }
+
+    public function getroom(Request $request){
+      $id = $request->userinfo;
+      $room = $request->roomname;
+      $data = preg_replace("/\s+/", "",$request->key);
+      $data = str_replace('[','',$data);
+      $data = str_replace(']','',$data);
+      $data = explode(',', $data);
+
+      if(count($data)>1){
+        $idx = DB::table('room_idx')->insertGetId([
           "nothing" => ""
         ]);
-        DB::table('follow')->insert([
-          'f_user_id' => $id1,
-          'follow' => $id2,
-          'room_idx' => $room_idx
-        ]);
-        $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
 
         DB::table('chat_room')->insert([
-          'user' => $id1,
-          'chat_room' => $room_idx,
-        ]);
-
-        DB::table('chat_room')->insert([
-          'user' => $id2,
-          'chat_room' => $room_idx
-        ]);
-      }
-      //한쪽은 팔로우가 되어있을
-      else{
-        $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id2)->where('follow', $id1)->get();
-        DB::table('follow')->insert([
-          'f_user_id' => $id1,
-          'follow' => $id2,
-          'room_idx' => $idx[0]->room_idx
-        ]);
-      }
-
-
-
-
-    }
-    else {
-      $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
-      DB::table('follow')->where('f_user_id', $id1)->where('follow', $id2)->delete();
-      DB::table('chat_room')->where('chat_room',$idx[0]->room_idx)->delete();
-    }
-    return $data.",".$idx[0]->room_idx;
-  }
-
-  public function friendlist(Request $request) {
-    $id1 = $request->user1;
-    $data = DB::table('follow')->where('f_user_id', $request->user1)->get();
-
-    // $data2 = DB::table('chat_room')->where('user', $request->user1)->select('chat_room')->get();
-
-
-    return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
-  }
-
-  public function getroom(Request $request){
-    $id = $request->userinfo;
-    $room = $request->roomname;
-    $data = preg_replace("/\s+/", "",$request->key);
-    $data = str_replace('[','',$data);
-    $data = str_replace(']','',$data);
-    $data = explode(',', $data);
-
-    if(count($data)>1){
-      $idx = DB::table('room_idx')->insertGetId([
-        "nothing" => ""
-      ]);
-
-      DB::table('chat_room')->insert([
-        'user' => $id,
-        'chat_room' => $idx,
-        'room_name' => $room
-      ]);
-
-      foreach($data as $key => $value){
-        DB::table('chat_room')->insert([
-          'user' => $data[$key],
+          'user' => $id,
           'chat_room' => $idx,
           'room_name' => $room
         ]);
+
+        foreach($data as $key => $value){
+          DB::table('chat_room')->insert([
+            'user' => $data[$key],
+            'chat_room' => $idx,
+            'room_name' => $room
+          ]);
+        }
+        $redata = DB::table('chat_room')->where('chat_room',$idx)->get();
       }
-      $redata = DB::table('chat_room')->where('chat_room',$idx)->get();
+      return $redata;
     }
-    return $redata;
+    public function echoroom(Request $request){
+      $data = DB::table('chat_room')->where('user', $request->userinfo)->get();
+      return $data;
+    }
   }
-  public function echoroom(Request $request){
-    $data = DB::table('chat_room')->where('user', $request->userinfo)->get();
-    return $data;
-  }
-}
