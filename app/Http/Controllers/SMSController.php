@@ -214,7 +214,19 @@ class SMSController extends Controller
       return $redata;
     }
     public function echoroom(Request $request){
-      $data = DB::table('chat_room')->where('user', $request->userinfo)->get();
-      return $data;
+      $user_list = DB::table('follow')->where('f_user_id', $request->userinfo)->get();
+      $room_list = DB::select("SELECT * FROM
+chat_room WHERE chat_room = ANY(SELECT chat_room FROM
+chat_room WHERE USER = '$request->userinfo');");
+      return json_encode(compact('user_list','room_list'),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
     }
-  }
+    public function group_room(Request $request){
+      $user = $request->user;
+      $data = DB::select("SELECT b.* FROM
+        chat_room AS b JOIN (SELECT *
+          FROM chat_room WHERE user = '$user' AND room_name IS NOT NULL) AS a ON b.chat_room = a.chat_room;
+          ");
+          return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+
+        }
+      }
