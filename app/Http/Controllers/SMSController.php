@@ -107,7 +107,7 @@ class SMSController extends Controller
     where('chat_room.chat_room','=',$room)->
     get();
 
-    FCMController::fcm($message, $user, $talktoken);
+    FCMController::fcm($user, $message, $talktoken);
     broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg));
     return $talktoken;
   }
