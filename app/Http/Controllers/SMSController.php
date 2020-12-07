@@ -99,7 +99,14 @@ class SMSController extends Controller
       'created_at' =>$date->format('yy-m-d H:i:s')
     ]);
 
-    $talktoken = DB::table('users')->select('Tocken')->join('chat_room', 'chat_room.user','=', 'users.id')->where('chat_room.user', '!=', $user)->where('chat_room.chat_room','=',$room)->get();
+    $talktoken =
+    DB::table('users')->
+    select('Tocken')->
+    join('chat_room', 'chat_room.user','=', 'users.id')->
+    // where('chat_room.user', '!=', $user)->
+    // where('chat_room.chat_room','=',$room)->
+    get();
+
     FCMController::fcm($message, $user, $talktoken);
     broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg));
     return $talktoken;
