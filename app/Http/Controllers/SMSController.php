@@ -101,10 +101,10 @@ class SMSController extends Controller
 
     $talktoken =
     DB::table('users')->
-    select('Tocken')->
+    select('Token')->
     join('chat_room', 'chat_room.user','=', 'users.id')->
-    // where('chat_room.user', '!=', $user)->
-    // where('chat_room.chat_room','=',$room)->
+    where('chat_room.user', '!=', $user)->
+    where('chat_room.chat_room','=',$room)->
     get();
 
     FCMController::fcm($message, $user, $talktoken);
