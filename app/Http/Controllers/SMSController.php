@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FCMController;
 use Illuminate\Http\Request;
 use DB;
 use DateTime;
@@ -87,12 +88,6 @@ class SMSController extends Controller
 
   function chatting(Request $request){
     $date = new DateTime();
-    // echo "<script src ='js/app.js'></script>";
-    // echo "<script type='text/javascript'>";
-    // echo "window.Echo.channel('ccit')
-    //     .listen('WebsocketEvent', (e) => {
-    //       console.log(e); });";
-    // echo "</script>";
     $user = $request->user;
     $room = $request->room;
     $message = $request->sendmsg;
@@ -103,6 +98,8 @@ class SMSController extends Controller
       'ch_idx' => $room,
       'created_at' =>$date->format('yy-m-d H:i:s')
     ]);
+  $talktoken  = DB::table('chat_room')->select('users.Tocken')->join('users', 'chat_room.user', 'users.id')->where('user', '!=', $user)->where('chat_room','=',$room)->get();
+      FCMController::fcm($message, $user, $talktoken);
     broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg));
     return $request;
   }
