@@ -152,6 +152,7 @@ class SMSController extends Controller
             'user' => $id2,
             'chat_room' => $room_idx
           ]);
+          broadcast(new \App\Events\chartEvent("[".$id1.",".$id2."]",$id2, $room_idx,null));
         }
         //한쪽은 팔로우가 되어있을
         else{
@@ -196,16 +197,17 @@ class SMSController extends Controller
       $data = str_replace(']','',$data);
       $data = explode(',', $data);
 
+// return $data;
       if(count($data)>1){
         $idx = DB::table('room_idx')->insertGetId([
           "nothing" => ""
         ]);
 
-        DB::table('chat_room')->insert([
-          'user' => $id,
-          'chat_room' => $idx,
-          'room_name' => $room
-        ]);
+        // DB::table('chat_room')->insert([
+        //   'user' => $id,
+        //   'chat_room' => $idx,
+        //   'room_name' => $room
+        // ]);
 
         foreach($data as $key => $value){
           DB::table('chat_room')->insert([
@@ -214,7 +216,7 @@ class SMSController extends Controller
             'room_name' => $room
           ]);
 
-            broadcast(new \App\Events\chartEvent(json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE), $data[$key], $idx,$room));
+            broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room));
 
 
         }
