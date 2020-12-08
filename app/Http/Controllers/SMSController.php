@@ -214,7 +214,7 @@ class SMSController extends Controller
             'room_name' => $room
           ]);
 
-            broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room));
+            broadcast(new \App\Events\chartEvent(json_encode($data), $data[$key], $idx,$room));
 
 
         }
