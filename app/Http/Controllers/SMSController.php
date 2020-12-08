@@ -213,9 +213,9 @@ class SMSController extends Controller
             'chat_room' => $idx,
             'room_name' => $room
           ]);
-          foreach ($data as $key2 => $value2) {
-            broadcast(new \App\Events\chartEvent($data[$key2], $data[$key], $idx,$room));
-          }
+
+            broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room));
+
 
         }
         $redata = DB::table('chat_room')->where('chat_room',$idx)->get();
