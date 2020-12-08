@@ -213,7 +213,7 @@ class SMSController extends Controller
             'chat_room' => $idx,
             'room_name' => $room
           ]);
-          foreach ($variable as $key2 => $value2) {
+          foreach ($data as $key2 => $value2) {
             broadcast(new \App\Events\chartEvent($data[$key2], $data[$key], $idx,$room));
           }
 
