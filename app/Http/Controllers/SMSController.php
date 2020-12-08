@@ -108,7 +108,7 @@ class SMSController extends Controller
     get();
 
     FCMController::fcm($user, $message, $talktoken);
-    broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg));
+    broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg,null));
     return $talktoken;
   }
 
@@ -213,6 +213,10 @@ class SMSController extends Controller
             'chat_room' => $idx,
             'room_name' => $room
           ]);
+          foreach ($variable as $key2 => $value2) {
+            broadcast(new \App\Events\chartEvent($data[$key2], $data[$key], $idx,$room));
+          }
+
         }
         $redata = DB::table('chat_room')->where('chat_room',$idx)->get();
       }
@@ -221,17 +225,17 @@ class SMSController extends Controller
     public function echoroom(Request $request){
       $user_list = DB::table('follow')->where('f_user_id', $request->userinfo)->get();
       $room_list = DB::select("SELECT * FROM
-chat_room WHERE chat_room = ANY(SELECT chat_room FROM
-chat_room WHERE USER = '$request->userinfo');");
-      return json_encode(compact('user_list','room_list'),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
-    }
-    public function group_room(Request $request){
-      $user = $request->user;
-      $data = DB::select("SELECT b.* FROM
-        chat_room AS b JOIN (SELECT *
-          FROM chat_room WHERE user = '$user' AND room_name IS NOT NULL) AS a ON b.chat_room = a.chat_room;
-          ");
-          return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
-
+        chat_room WHERE chat_room = ANY(SELECT chat_room FROM
+          chat_room WHERE USER = '$request->userinfo');");
+          return json_encode(compact('user_list','room_list'),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
         }
-      }
+        public function group_room(Request $request){
+          $user = $request->user;
+          $data = DB::select("SELECT b.* FROM
+            chat_room AS b JOIN (SELECT *
+              FROM chat_room WHERE user = '$user' AND room_name IS NOT NULL) AS a ON b.chat_room = a.chat_room;
+              ");
+              return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+
+            }
+          }

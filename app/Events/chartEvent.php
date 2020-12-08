@@ -16,16 +16,18 @@ class chartEvent implements ShouldBroadcast
     public $message;
     public $user;
     public $channel;
+    public $room_name;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($user , $channel, $m)
+    public function __construct($user , $channel, $m, $room_name)
     {
         $this->message = $m;
         $this->user = $user;
         $this->channel = $channel;
+        $this->room_name = $room_name;
     }
 
     /**
