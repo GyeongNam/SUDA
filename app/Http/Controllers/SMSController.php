@@ -133,111 +133,127 @@ class SMSController extends Controller
 
         //서로 팔로우가 안되어있을때
         if($data3<1){
-          $room_idx = DB::table('room_idx')->insertGetId([
+          $room_count = DB::select("SELECT * FROM room_idx
+            WHERE (USER1 = '$id1' AND USER2 = '$id2') OR (USER1 = '$id2' AND USER2 = '$id1')");
+            //기존에 방이 없으면 새로 생성
+            // return count($room_count);
+            if(count($room_count)==0){
+              $room_idx = DB::table('room_idx')->insertGetId([
+                'nothing' => "",
+                'user1' => $id1,
+                'user2' => $id2
+              ]);
+              DB::table('follow')->insert([
+                'f_user_id' => $id1,
+                'follow' => $id2,
+                'room_idx' => $room_idx
+              ]);
+
+
+              DB::table('chat_room')->insert([
+                'user' => $id1,
+                'chat_room' => $room_idx,
+              ]);
+
+              DB::table('chat_room')->insert([
+                'user' => $id2,
+                'chat_room' => $room_idx
+              ]);
+              $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
+              broadcast(new \App\Events\chartEvent("[".$id1.",".$id2."]",$id2, $room_idx,null));
+            }
+            //현재 서로 팔로우는 안되어 있지만 서로 팔로우를 한번이라도 했었던적이 있었을때
+            else{
+              DB::table('follow')->insert([
+                'f_user_id' => $id1,
+                'follow' => $id2,
+                'room_idx' => $room_count[0]->room_idx
+              ]);
+              $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
+            }
+
+          }
+          //한쪽은 팔로우가 되어있을때
+          else{
+            $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id2)->where('follow', $id1)->get();
+            DB::table('follow')->insert([
+              'f_user_id' => $id1,
+              'follow' => $id2,
+              'room_idx' => $idx[0]->room_idx
+            ]);
+          }
+
+        }
+        //사용자 기준 이미 팔로우 상태일경우 삭제하기($data == 1일때)
+        //팔로우 삭제시에 기본방은 남아있어야함 팔로우는 삭제되어야함
+        else {
+          $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
+          DB::table('follow')->where('f_user_id', $id1)->where('follow', $id2)->delete();
+          // 상대방 기준 팔로우 아닐경우
+
+        }
+        return $data.",".$idx[0]->room_idx;
+      }
+
+      public function friendlist(Request $request) {
+        $id1 = $request->user1;
+        $data = DB::table('follow')->where('f_user_id', $request->user1)->get();
+
+        // $data2 = DB::table('chat_room')->where('user', $request->user1)->select('chat_room')->get();
+
+
+        return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+      }
+
+      public function getroom(Request $request){
+        $id = $request->userinfo;
+        $room = $request->roomname;
+        $data = preg_replace("/\s+/", "",$request->key);
+        $data = str_replace('[','',$data);
+        $data = str_replace(']','',$data);
+        $data = explode(',', $data);
+
+        // return $data;
+        if(count($data)>1){
+          $idx = DB::table('room_idx')->insertGetId([
             "nothing" => ""
           ]);
-          DB::table('follow')->insert([
-            'f_user_id' => $id1,
-            'follow' => $id2,
-            'room_idx' => $room_idx
-          ]);
-          $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
 
-          DB::table('chat_room')->insert([
-            'user' => $id1,
-            'chat_room' => $room_idx,
-          ]);
+          // DB::table('chat_room')->insert([
+          //   'user' => $id,
+          //   'chat_room' => $idx,
+          //   'room_name' => $room
+          // ]);
 
-          DB::table('chat_room')->insert([
-            'user' => $id2,
-            'chat_room' => $room_idx
-          ]);
-          broadcast(new \App\Events\chartEvent("[".$id1.",".$id2."]",$id2, $room_idx,null));
-        }
-        //한쪽은 팔로우가 되어있을
-        else{
-          $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id2)->where('follow', $id1)->get();
-          DB::table('follow')->insert([
-            'f_user_id' => $id1,
-            'follow' => $id2,
-            'room_idx' => $idx[0]->room_idx
-          ]);
-        }
-
-
-
-
-      }
-      else {
-        $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
-        DB::table('follow')->where('f_user_id', $id1)->where('follow', $id2)->delete();
-        if($data3<1){
-          DB::table('chat_room')->where('chat_room',$idx[0]->room_idx)->delete();
-        }
-
-      }
-      return $data.",".$idx[0]->room_idx;
-    }
-
-    public function friendlist(Request $request) {
-      $id1 = $request->user1;
-      $data = DB::table('follow')->where('f_user_id', $request->user1)->get();
-
-      // $data2 = DB::table('chat_room')->where('user', $request->user1)->select('chat_room')->get();
-
-
-      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
-    }
-
-    public function getroom(Request $request){
-      $id = $request->userinfo;
-      $room = $request->roomname;
-      $data = preg_replace("/\s+/", "",$request->key);
-      $data = str_replace('[','',$data);
-      $data = str_replace(']','',$data);
-      $data = explode(',', $data);
-
-// return $data;
-      if(count($data)>1){
-        $idx = DB::table('room_idx')->insertGetId([
-          "nothing" => ""
-        ]);
-
-        // DB::table('chat_room')->insert([
-        //   'user' => $id,
-        //   'chat_room' => $idx,
-        //   'room_name' => $room
-        // ]);
-
-        foreach($data as $key => $value){
-          DB::table('chat_room')->insert([
-            'user' => $data[$key],
-            'chat_room' => $idx,
-            'room_name' => $room
-          ]);
+          foreach($data as $key => $value){
+            DB::table('chat_room')->insert([
+              'user' => $data[$key],
+              'chat_room' => $idx,
+              'room_name' => $room
+            ]);
 
             broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room));
 
 
-        }
-        $redata = DB::table('chat_room')->where('chat_room',$idx)->get();
-      }
-      return $redata;
-    }
-    public function echoroom(Request $request){
-      $user_list = DB::table('follow')->where('f_user_id', $request->userinfo)->get();
-      $room_list = DB::select("SELECT * FROM
-        chat_room WHERE chat_room = ANY(SELECT chat_room FROM
-          chat_room WHERE USER = '$request->userinfo');");
-          return json_encode(compact('user_list','room_list'),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
-        }
-        public function group_room(Request $request){
-          $user = $request->user;
-          $data = DB::select("SELECT b.* FROM
-            chat_room AS b JOIN (SELECT *
-              FROM chat_room WHERE user = '$user' AND room_name IS NOT NULL) AS a ON b.chat_room = a.chat_room;
-              ");
-              return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
-
-            }
           }
+          $redata = DB::table('chat_room')->where('chat_room',$idx)->get();
+        }
+        return $redata;
+      }
+      public function echoroom(Request $request){
+        $user_list = DB::table('follow')->where('f_user_id', $request->userinfo)->get();
+        $room_list = DB::select("SELECT * FROM
+          chat_room WHERE chat_room = ANY(SELECT chat_room FROM
+            chat_room WHERE USER = '$request->userinfo');");
+            return json_encode(compact('user_list','room_list'),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+          }
+          public function group_room(Request $request){
+            $user = $request->user;
+            $data = DB::select("SELECT b.* FROM
+              chat_room AS b JOIN (SELECT *
+                FROM chat_room WHERE user = '$user' AND room_name IS NOT NULL) AS a ON b.chat_room = a.chat_room;
+                ");
+                return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+
+              }
+            }
