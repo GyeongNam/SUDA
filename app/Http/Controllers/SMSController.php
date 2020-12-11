@@ -92,7 +92,7 @@ class SMSController extends Controller
     $room = $request->room;
     $message = $request->sendmsg;
 
-    DB::table('chat_list')->insert([
+    $chatidx = DB::table('chat_list')->insertGetId([
       'message' => $message,
       'user' => $user,
       'ch_idx' => $room,
@@ -106,9 +106,8 @@ class SMSController extends Controller
     where('chat_room.user', '!=', $user)->
     where('chat_room.chat_room','=',$room)->
     get();
-
     FCMController::fcm($user, $message, $talktoken);
-    broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg,null));
+    broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg,null,$chatidx));
     return $talktoken;
   }
 
@@ -160,7 +159,7 @@ class SMSController extends Controller
                 'chat_room' => $room_idx
               ]);
               $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
-              broadcast(new \App\Events\chartEvent("[".$id1.",".$id2."]",$id2, $room_idx,null));
+              broadcast(new \App\Events\chartEvent("[".$id1.",".$id2."]",$id2, $room_idx,null,null));
             }
             //현재 서로 팔로우는 안되어 있지만 서로 팔로우를 한번이라도 했었던적이 있었을때
             else{
@@ -232,7 +231,7 @@ class SMSController extends Controller
               'room_name' => $room
             ]);
 
-            broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room));
+            broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room,null));
 
 
           }
@@ -247,6 +246,7 @@ class SMSController extends Controller
             chat_room WHERE USER = '$request->userinfo');");
             return json_encode(compact('user_list','room_list'),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
           }
+
           public function group_room(Request $request){
             $user = $request->user;
             $data = DB::select("SELECT b.* FROM
@@ -256,4 +256,9 @@ class SMSController extends Controller
                 return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
 
               }
+              // public function get_lately_chat_list(Request $request){
+              //
+              //
+              //   return 0;
+              // }
             }
