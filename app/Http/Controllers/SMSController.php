@@ -259,6 +259,7 @@ class SMSController extends Controller
               public function get_lately_chat_list(Request $request){
                 $data = json_decode($request->key);
                 // return count($data);
+                $array = [];
                 foreach ($data as $data) {
                   $array =  DB::table('chat_list')->where('chatnum','>',$data->chat_idx)->where('ch_idx',$data->chat_room)->get();
                   DB::table('chat_room')->where('user',$request->user)->where('chat_room',$data->chat_room)->update([
