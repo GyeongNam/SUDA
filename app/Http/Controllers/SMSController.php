@@ -256,9 +256,18 @@ class SMSController extends Controller
                 return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
 
               }
-              // public function get_lately_chat_list(Request $request){
-              //
-              //
-              //   return 0;
-              // }
+              public function get_lately_chat_list(Request $request){
+                $data = json_decode($request->key);
+                // return count($data);
+                foreach ($data as $data) {
+                  $array =  DB::table('chat_list')->where('chatnum','>',$data->chat_idx)->where('ch_idx',$data->chat_room)->get();
+                  DB::table('chat_room')->where('user',$request->user)->where('chat_room',$data->chat_room)->update([
+                    'lately_chat_idx' => $data->chat_idx
+                  ]);
+                }
+
+                return json_encode($array,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+                //
+                //   return 0;
+              }
             }

@@ -36,6 +36,8 @@ Route::post('/getroom', [SMSController::class, 'getroom']);
 Route::post('/echoroom', [SMSController::class, 'echoroom']);
 Route::post('/group_room', [SMSController::class, 'group_room']);
 
+Route::post('/get_lately_chat_list', [SMSController::class, 'get_lately_chat_list']);
+
 Route::get('/', function () {
   $data = DB::select("SELECT b.* FROM
     chat_room AS b JOIN (SELECT *
@@ -46,7 +48,8 @@ Route::get('/', function () {
   });
 
   Route::post('/main', [UserController::class, 'main']); // 로그인 후 첫 진입화면
-  Route::get('/test', function () {
+  Route::post('/test', function () {
+    return 0;
     $now = new DateTime;
     $data = DB::table('post')->where('post.post_num',1)
     ->join('comment','post.post_num','comment.post_num')->get();
