@@ -98,7 +98,9 @@ class SMSController extends Controller
       'ch_idx' => $room,
       'created_at' =>$date->format('yy-m-d H:i:s')
     ]);
-
+    DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->update([
+      'lately_chat_idx' => $chatidx
+    ]);
     $talktoken =
     DB::table('users')->
     select('Token')->
