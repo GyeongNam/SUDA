@@ -261,14 +261,17 @@ class SMSController extends Controller
                 // return count($data);
                 $array = [];
                 foreach ($data as $data) {
-                  $array =  DB::table('chat_list')->where('chatnum','>',$data->chat_idx)->where('ch_idx',$data->chat_room)->get();
-                  DB::table('chat_room')->where('user',$request->user)->where('chat_room',$data->chat_room)->update([
-                    'lately_chat_idx' => $data->chat_idx
-                  ]);
+                  $array[] =  DB::table('chat_list')->where('chatnum','>',$data->chat_idx)->where('ch_idx',$data->chat_room)->get();
+                  // return $data->chat_room;
+                  $lately = DB::select("SELECT * FROM
+                    (SELECT * FROM chat_list WHERE ch_idx = '$data->chat_room' ORDER BY chatnum DESC) AS a GROUP BY ch_idx");
+                    // return $lately;
+                    DB::table('chat_room')->where('user',$request->user)->where('chat_room',$data->chat_room)->update([
+                      'lately_chat_idx' => $lately[0]->chatnum
+                    ]);
+                  }
+                  return json_encode($array,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+                  //
+                  //   return 0;
                 }
-
-                return json_encode($array,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
-                //
-                //   return 0;
               }
-            }
