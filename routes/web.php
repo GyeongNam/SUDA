@@ -49,8 +49,13 @@ Route::get('/', function () {
 
     Route::post('/main', [UserController::class, 'main']); // 로그인 후 첫 진입화면
     Route::get('/test', function () {
-      $data = DB::select("SELECT * FROM
-        (SELECT * FROM chat_list WHERE ch_idx = '163' ORDER BY chatnum DESC) AS a GROUP BY ch_idx");
+      $data = DB::select("SELECT * FROM(SELECT * FROM
+chat_list
+WHERE ch_idx =
+ANY(SELECT chat_room FROM
+chat_room WHERE USER = 'test'))a WHERE ch_idx = ANY(SELECT chat_room FROM
+chat_room WHERE USER = 'test' AND a.chatnum > lately_chat_idx);
+");
       return $data;
 
       $now = new DateTime;

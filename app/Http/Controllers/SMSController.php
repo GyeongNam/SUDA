@@ -260,20 +260,46 @@ class SMSController extends Controller
               }
               public function get_lately_chat_list(Request $request){
                 $data = json_decode($request->key);
-                // return count($data);
-                $array = [];
-                foreach ($data as $data) {
-                  $array[] =  DB::table('chat_list')->where('chatnum','>',$data->chat_idx)->where('ch_idx',$data->chat_room)->get();
-                  // return $data->chat_room;
-                  $lately = DB::select("SELECT * FROM
-                    (SELECT * FROM chat_list WHERE ch_idx = '$data->chat_room' ORDER BY chatnum DESC) AS a GROUP BY ch_idx");
-                    // return $lately;
-                    DB::table('chat_room')->where('user',$request->user)->where('chat_room',$data->chat_room)->update([
-                      'lately_chat_idx' => $lately[0]->chatnum
-                    ]);
-                  }
-                  return json_encode($array,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
-                  //
-                  //   return 0;
-                }
-              }
+                $user = $request->user;
+
+                $get_chat_list = DB::select("SELECT * FROM
+                  (SELECT * FROM
+                    chat_list
+                    WHERE ch_idx =
+                    ANY(SELECT chat_room FROM
+                      chat_room WHERE USER = '$user'))a
+                      WHERE ch_idx = ANY(SELECT chat_room FROM chat_room WHERE USER = '$user' AND a.chatnum > lately_chat_idx);");
+                      // return count($data);
+                      $update_lately_chat_idx = DB::select("SELECT * FROM(
+                        SELECT * FROM(SELECT * FROM
+                          chat_list
+                          WHERE ch_idx =
+                          ANY(SELECT chat_room FROM
+                            chat_room WHERE USER = '$user'))a WHERE ch_idx = ANY(SELECT chat_room FROM
+                              chat_room WHERE USER = '$user' AND a.chatnum > lately_chat_idx) ORDER BY chatnum DESC
+                            ) b
+                            GROUP BY ch_idx
+                            ;");
+
+                            foreach ($update_lately_chat_idx as $value) {
+                              DB::table('chat_room')->where('user',$user)->where('chat_room',$value->ch_idx)->update([
+                                'lately_chat_idx' => $value->chatnum
+                              ]);
+                            }
+                            // $array = [];
+                            // foreach ($data as $data) {
+                            //   $array[] =  DB::table('chat_list')->where('chatnum','>',$data->chat_idx)->where('ch_idx',$data->chat_room)->get();
+                            //
+                            //   $lately = DB::select("SELECT * FROM
+                            //     (SELECT * FROM chat_list WHERE ch_idx = '$data->chat_room' ORDER BY chatnum DESC) AS a GROUP BY ch_idx");
+                            //
+                            //     DB::table('chat_room')->where('user',$request->user)->where('chat_room',$data->chat_room)->update([
+                            //       'lately_chat_idx' => $lately[0]->chatnum
+                            //     ]);
+                            //   }
+
+                            return json_encode($get_chat_list,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+                            //
+                            //   return 0;
+                          }
+                        }
