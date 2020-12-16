@@ -232,14 +232,14 @@ class SMSController extends Controller
               'chat_room' => $idx,
               'room_name' => $room
             ]);
-
-            broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room,null));
-
-
+            if($id != $data[$key]){
+              broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room,null));
+            }
+            
           }
           $redata = DB::table('chat_room')->where('chat_room',$idx)->get();
         }
-        return $redata;
+        return 0;
       }
       public function echoroom(Request $request){
         $user_list = DB::table('follow')->where('f_user_id', $request->userinfo)->get();
