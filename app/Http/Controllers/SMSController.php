@@ -235,11 +235,11 @@ class SMSController extends Controller
             if($id != $data[$key]){
               broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room,null));
             }
-            
+
           }
           $redata = DB::table('chat_room')->where('chat_room',$idx)->get();
         }
-        return 0;
+        return $redata;
       }
       public function echoroom(Request $request){
         $user_list = DB::table('follow')->where('f_user_id', $request->userinfo)->get();
