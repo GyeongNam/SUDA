@@ -11,6 +11,7 @@ use App\Http\Controllers\NotiController;
 use App\Http\Controllers\Listalarm;
 use App\Http\Controllers\FCMController;
 use App\Http\Controllers\boardController;
+use App\Http\Controllers\AppNotiController;
 use Illuminate\Http\Request;
 // use DateTime;
 
@@ -43,7 +44,7 @@ Route::get('/', function () {
     chat_room AS b JOIN (SELECT *
       FROM chat_room WHERE user = 'admin' AND room_name IS NOT NULL) AS a ON b.chat_room = a.chat_room;
       ");
-      return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+      // return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
       return view('welcome');
     });
 
@@ -89,7 +90,6 @@ chat_room WHERE USER = 'test' AND a.chatnum > lately_chat_idx);
     Route::get('/PostList', function(){
       return view('PostList');
     });
-
     Route::post('/add_post', [PostController::class, 'add_post']);        // 게시글 추가
     Route::post('/up_post', [PostController::class, 'up_post']);       // 게시글 수정을 위한 데이터 바인딩
     Route::post('/update_post', [PostController::class, 'update_post']);    // 게시글 수정
@@ -115,3 +115,7 @@ chat_room WHERE USER = 'test' AND a.chatnum > lately_chat_idx);
     Route::post('/keywordadd', [FCMController::class, 'keywordadd']);
     Route::post('/getkeyword', [FCMController::class, 'getkeyword']);
     Route::post('/removekeyword', [FCMController::class, 'removekeyword']);
+
+    Route::post('/noti', [AppNotiController::class, 'noti']);
+    Route::get('/noti_manager', [AppNotiController::class, 'manager_site']);
+    Route::post('/filter', [AppNotiController::class, 'filter']);
