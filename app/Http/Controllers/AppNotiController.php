@@ -12,17 +12,19 @@ class AppNotiController extends Controller
   //
   public function noti(Request $request){
     // return 0;
-    $data = json_decode($request->key);
-    // return $data;
-    foreach ($data as $value) {
-      DB::table('app_notification')->insert([
-        'app_name' => $value->name,
-        'app_title' => $value->title,
-        'app_text' => $value->text,
-        'app_bigtext' => $value->bigtext,
-        'app_date' => $value->date
-      ]);
-    }
+    $data = json_decode(preg_replace("/\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2}/", "",$request->key));
+      foreach ($data as $value) {
+        DB::table('app_notification')->insert([
+          'app_name' => $value->name,
+          'app_title' => $value->title,
+          'app_text' => $value->text,
+          'app_bigtext' => $value->bigtext,
+          'app_date' => $value->date
+        ]);
+      }
+
+
+    // return 0;
     $fileter = DB::table('app_notification_filter')->get();
     return json_encode($fileter,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
   }
@@ -41,10 +43,10 @@ class AppNotiController extends Controller
         'app_text' => $move[0]->app_text,
         'app_bigtext' => $move[0]->app_bigtext,
         'app_date' => $move[0]->app_date
-    ]);
-    DB::table('app_notification')->where('idx',$value)->delete();
-    // return $value;
+      ]);
+      DB::table('app_notification')->where('idx',$value)->delete();
+      // return $value;
+    }
+    return redirect('noti_manager');
   }
-  return redirect('noti_manager');
-}
 }
