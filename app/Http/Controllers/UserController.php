@@ -13,7 +13,7 @@ class UserController extends Controller
     // return $request->userid;
     $userdata = DB::table('users')->where('id',$request->userid)->get();
     // $lastword = substr($userdata,1,-1);
-    $alluserdata = DB::select("SELECT X.*
+    $post_data = DB::select("SELECT X.*
       FROM
       (
         SELECT s.*,
@@ -23,8 +23,10 @@ class UserController extends Controller
         join categorie m
         JOIN (SELECT * FROM post ORDER BY categorie_num,post_num DESC) AS s  on m.categorie_num = s.categorie_num
       ) X WHERE r <= 3;");
+      //정렬 데이터
+      $data = DB::select("SELECT categorie FROM categorie JOIN post ON categorie.categorie_num = post.categorie_num GROUP BY categorie.categorie_num;");
       // $postlist = json_encode(DB데이터 들어가야함,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
-      $jsondata = json_encode($alluserdata,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);//jsondata 쉽게 만들기
+      $jsondata = json_encode(compact("post_data","data"),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);//jsondata 쉽게 만들기
       //return '1';
       return $jsondata;
 
