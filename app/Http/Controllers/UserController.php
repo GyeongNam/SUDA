@@ -21,12 +21,13 @@ class UserController extends Controller
         @g:=m.categorie AS categorie
         FROM (select @g:=null,@r:=0) AS n
         join categorie m
-        JOIN (SELECT * FROM post ORDER BY categorie_num,post_num DESC) AS s  on m.categorie_num = s.categorie_num
-      ) X WHERE r <= 3;");
+        JOIN (SELECT * FROM post ORDER BY categorie_num,post_num DESC) AS s  on m.categorie_num = s.categorie_num WHERE post_activation = 1
+      ) X WHERE r <= 5;");
       //정렬 데이터
-      $data = DB::select("SELECT categorie FROM categorie JOIN post ON categorie.categorie_num = post.categorie_num GROUP BY categorie.categorie_num;");
+      $data = DB::select("SELECT categorie FROM categorie JOIN post ON categorie.categorie_num = post.categorie_num WHERE post_activation = 1 GROUP BY categorie.categorie_num;");
+      $mypost = DB::table('post')->where('post_activation',1)->where('writer',$request->userid)->orderBydesc('post_num')->limit(5)->get();
       // $postlist = json_encode(DB데이터 들어가야함,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
-      $jsondata = json_encode(compact("post_data","data"),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);//jsondata 쉽게 만들기
+      $jsondata = json_encode(compact("post_data","data","mypost"),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);//jsondata 쉽게 만들기
       //return '1';
       return $jsondata;
 
