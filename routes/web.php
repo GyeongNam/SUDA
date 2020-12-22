@@ -36,6 +36,7 @@ Route::post('/friendlist', [SMSController::class, 'friendlist']);
 Route::post('/getroom', [SMSController::class, 'getroom']);
 Route::post('/echoroom', [SMSController::class, 'echoroom']);
 Route::post('/group_room', [SMSController::class, 'group_room']);
+Route::post('/disconnect_room', [SMSController::class, 'disconnect_room']);
 
 Route::post('/get_lately_chat_list', [SMSController::class, 'get_lately_chat_list']);
 

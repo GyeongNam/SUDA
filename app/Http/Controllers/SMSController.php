@@ -241,6 +241,15 @@ class SMSController extends Controller
         }
         return $redata;
       }
+
+      public function disconnect_room(Request $request){
+        $user = $request->user1;
+        $room = $request->room;
+
+        DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->delete();
+        return $request;
+      }
+
       public function echoroom(Request $request){
         $user_list = DB::table('follow')->where('f_user_id', $request->userinfo)->get();
         $room_list = DB::select("SELECT * FROM
