@@ -96,7 +96,7 @@ class SMSController extends Controller
       'message' => $message,
       'user' => $user,
       'ch_idx' => $room,
-      'created_at' =>$date->format('H:i')
+      'created_at' =>$date->format('yy-m-d H:i:s')
     ]);
     DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->update([
       'lately_chat_idx' => $chatidx
