@@ -245,7 +245,8 @@ class SMSController extends Controller
       public function disconnect_room(Request $request){
         $user = $request->user1;
         $room = $request->room;
-        // broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,null));
+        $date = new DateTime();
+        broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,null, $date->format('yy-m-d H:i:s') ));
         DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->delete();
 
         return $request;
