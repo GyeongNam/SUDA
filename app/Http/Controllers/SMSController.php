@@ -251,11 +251,16 @@ class SMSController extends Controller
         foreach($users as $key => $value){
           broadcast(new \App\Events\chartEvent($user, $users[$key]->user, "SYSTEM",$room,null,null));
         }
-        DB::table('chat_list')->insert([
+
+        $chatidx = DB::table('chat_list')->insertGetId([
           'message' => $user." 님이 채팅방을 나갔습니다.",
           'user' => "SYSTEM",
           'ch_idx' => $room,
           'created_at' =>$date->format('yy-m-d H:i:s')
+        ]);
+
+        DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->update([
+          'lately_chat_idx' => $chatidx
         ]);
 
         broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,null, $date->format('yy-m-d H:i:s') ));
