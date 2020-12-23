@@ -263,7 +263,7 @@ class SMSController extends Controller
           'lately_chat_idx' => $chatidx
         ]);
 
-        broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,null, $date->format('yy-m-d H:i:s') ));
+        broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,$chatidx, $date->format('yy-m-d H:i:s') ));
         DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->delete();
 
         return $request;
