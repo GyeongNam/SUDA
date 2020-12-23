@@ -247,9 +247,9 @@ class SMSController extends Controller
         $room = $request->room;
         $date = new DateTime();
 
-        $users =  DB::table('chat_room')->where('chat_room',$room)->get();
+        $users = DB::table('chat_room')->where('chat_room',$room)->get();
         foreach($users as $key => $value){
-          broadcast(new \App\Events\chartEvent($users, $users[$key], "SYSTEM",null,null,null));
+          broadcast(new \App\Events\chartEvent($user, $users[$key]->user, "SYSTEM",$room,null,null));
         }
         DB::table('chat_list')->insert([
           'message' => $user." 님이 채팅방을 나갔습니다.",
