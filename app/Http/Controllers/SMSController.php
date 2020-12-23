@@ -109,7 +109,7 @@ class SMSController extends Controller
     where('chat_room.chat_room','=',$room)->
     get();
     FCMController::fcm($user, $message, $talktoken);
-    broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg,null,$chatidx));
+    broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg,null,$chatidx,$date->format('yy-m-d H:i:s')));
     return $talktoken;
   }
 
@@ -161,7 +161,7 @@ class SMSController extends Controller
                 'chat_room' => $room_idx
               ]);
               $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
-              broadcast(new \App\Events\chartEvent("[".$id1.",".$id2."]",$id2, $room_idx,null,null));
+              broadcast(new \App\Events\chartEvent("[".$id1.",".$id2."]",$id2, $room_idx,null,null,null));
             }
             //현재 서로 팔로우는 안되어 있지만 서로 팔로우를 한번이라도 했었던적이 있었을때
             else{
@@ -233,7 +233,7 @@ class SMSController extends Controller
               'room_name' => $room
             ]);
             if($id != $data[$key]){
-              broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room,null));
+              broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room,null,null));
             }
 
           }
