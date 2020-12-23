@@ -26,6 +26,15 @@ class PostController extends Controller
       $picture = null;
     }
 
+    $post_num = Post::insertGetId([
+      'categorie_num' => $request->categorie+1,
+      'Title' => $request->Title,
+      'Text' => $request->Text,
+      'image' => $picture,
+      'post_activation' => 1,
+      'writer' => $request->writer
+    ]);
+
     $keyword = DB::table('keyword')
     ->where(['pushkeyword'=>1])
     ->join('users', 'users.id', '=', 'keyword.userid')
@@ -35,13 +44,13 @@ class PostController extends Controller
       if(strpos($request->Title, $value->text) !== false) {
         $token = DB::table('users')->select('Token')->where(['id'=>$value->id])->get();
         if ($value->id != $request->writer) {
-          FCMController::fcm("키워드와 관련된 글이 올라왔어요.",$request->Title, $token, "1");
+          FCMController::fcm("키워드와 관련된 글이 올라왔어요.",$request->Title, $token, "1", $post_num);
         }
       }
       if(strpos($request->Text, $value->text) !== false) {
         $token = DB::table('users')->select('Token')->where(['id'=>$value->id])->get();
         if ($value->id != $request->writer) {
-          FCMController::fcm("키워드와 관련된 글이 올라았어요.",$request->Title, $token, "1");
+          FCMController::fcm("키워드와 관련된 글이 올라았어요.",$request->Title, $token, "1", $post_num);
         }
       }
     }
@@ -62,16 +71,6 @@ class PostController extends Controller
         }
       }
     }
-
-    $post = new Post([
-      'categorie_num' => $request->categorie+1,
-      'Title' => $request->Title,
-      'Text' => $request->Text,
-      'image' => $picture,
-      'post_activation' => 1,
-      'writer' => $request->writer
-    ]);
-    $post->save();
 
 
     $message = 1;     // 등록 성공
@@ -192,7 +191,7 @@ class PostController extends Controller
         ]);
         //!댓글 작성자 == 대댓글작성자
         if($comment_writer[0]->c_writer!=$request->writer){
-          FCMController::fcm("내 댓글에 답글이 달렸습니다.",$request->reply, $a, "1");
+          FCMController::fcm("내 댓글에 답글이 달렸습니다.",$request->reply, $a, "1", $request->post_num);
         }
 
       }
@@ -208,7 +207,7 @@ class PostController extends Controller
           'parent'=>$request->comment_num
         ]);
         //!댓글 작성자 == 대댓글작성자
-        FCMController::fcm("내 댓글에 답글이 달렸습니다.",$request->reply, $b, "1");
+        FCMController::fcm("내 댓글에 답글이 달렸습니다.",$request->reply, $b, "1", $request->post_num);
       }
 
     }
@@ -225,7 +224,7 @@ class PostController extends Controller
       //게시글 작성자에게 푸시알림
       //!글 작성자 == 댓글작성자
       if($writer[0]->writer != $request->writer){
-        FCMController::fcm("내 게시글에 댓글이 달렸습니다.",$request->reply, $k, "1");
+        FCMController::fcm("내 게시글에 댓글이 달렸습니다.",$request->reply, $k, "1", $request->post_num);
       }
 
     }

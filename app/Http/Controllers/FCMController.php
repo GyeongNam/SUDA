@@ -13,7 +13,7 @@ use DB;
 class FCMController extends Controller
 {
     //
-    static public function fcm($title, $body, $token, $key){
+    static public function fcm($title, $body, $token, $key, $num){
         $tokens = array();
 
         if(sizeof($token) > 0 ){
@@ -27,7 +27,8 @@ class FCMController extends Controller
         $message = array(
           'title' => $title,
           'body' => $body,
-          'key' => $key
+          'key' => $key,
+          'num' => $num
         );
 
         $url = 'https://fcm.googleapis.com/fcm/send';
