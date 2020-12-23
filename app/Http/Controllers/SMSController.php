@@ -246,6 +246,14 @@ class SMSController extends Controller
         $user = $request->user1;
         $room = $request->room;
         $date = new DateTime();
+
+        DB::table('chat_list')->insert([
+          'message' => "SYSTEM",
+          'user' => $user,
+          'ch_idx' => $room,
+          'created_at' =>$date->format('yy-m-d H:i:s')
+        ]);
+
         broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,null, $date->format('yy-m-d H:i:s') ));
         DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->delete();
 
