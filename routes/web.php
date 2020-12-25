@@ -28,6 +28,7 @@ use Illuminate\Http\Request;
 */
 
 Route::post('/chartEvent', [SMSController::class, 'chatting']);
+Route::post('/chat_status', [SMSController::class, 'chat_status']);
 Route::post('/search', [SMSController::class, 'search']);
 Route::post('/follows', [SMSController::class, 'follows']);
 Route::post('/unfollow', [SMSController::class, 'unfollow']);

@@ -91,12 +91,13 @@ class SMSController extends Controller
     $user = $request->user;
     $room = $request->room;
     $message = $request->sendmsg;
-
+    $user_count = DB::table('chat_room')->where('chat_room',$room)->get()->count()-1;
     $chatidx = DB::table('chat_list')->insertGetId([
       'message' => $message,
       'user' => $user,
       'ch_idx' => $room,
-      'created_at' =>$date->format('yy-m-d H:i:s')
+      'created_at' =>$date->format('yy-m-d H:i:s'),
+      'chat_status' => $user_count
     ]);
     DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->update([
       'lately_chat_idx' => $chatidx
@@ -109,7 +110,7 @@ class SMSController extends Controller
     where('chat_room.chat_room','=',$room)->
     get();
     FCMController::fcm($user, $message, $talktoken, "2", $room);
-    broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg,null,$chatidx,$date->format('yy-m-d H:i:s')));
+    broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg,null,$chatidx,$date->format('yy-m-d H:i:s'),$user_count));
     return $talktoken;
   }
 
@@ -161,7 +162,7 @@ class SMSController extends Controller
                 'chat_room' => $room_idx
               ]);
               $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
-              broadcast(new \App\Events\chartEvent("[".$id1.",".$id2."]",$id2, $room_idx,null,null,null));
+              broadcast(new \App\Events\chartEvent("[".$id1.",".$id2."]",$id2, $room_idx,null,null,null,null));
             }
             //현재 서로 팔로우는 안되어 있지만 서로 팔로우를 한번이라도 했었던적이 있었을때
             else{
@@ -233,7 +234,7 @@ class SMSController extends Controller
               'room_name' => $room
             ]);
             if($id != $data[$key]){
-              broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room,null,null));
+              broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room,null,null,null));
             }
 
           }
@@ -249,7 +250,7 @@ class SMSController extends Controller
 
         $users = DB::table('chat_room')->where('chat_room',$room)->get();
         foreach($users as $key => $value){
-          broadcast(new \App\Events\chartEvent($user, $users[$key]->user, "SYSTEM",$room,null,null));
+          broadcast(new \App\Events\chartEvent($user, $users[$key]->user, "SYSTEM",$room,null,null,null));
         }
 
         $chatidx = DB::table('chat_list')->insertGetId([
@@ -263,7 +264,7 @@ class SMSController extends Controller
           'lately_chat_idx' => $chatidx
         ]);
 
-        broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,$chatidx, $date->format('yy-m-d H:i:s') ));
+        broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,$chatidx, $date->format('yy-m-d H:i:s'),null));
         DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->delete();
 
         return $request;
@@ -289,7 +290,6 @@ class SMSController extends Controller
               public function get_lately_chat_list(Request $request){
                 $data = json_decode($request->key);
                 $user = $request->user;
-
                 $get_chat_list = DB::select("SELECT * FROM
                   (SELECT * FROM
                     chat_list
@@ -309,11 +309,11 @@ class SMSController extends Controller
                             GROUP BY ch_idx
                             ;");
 
-                            foreach ($update_lately_chat_idx as $value) {
-                              DB::table('chat_room')->where('user',$user)->where('chat_room',$value->ch_idx)->update([
-                                'lately_chat_idx' => $value->chatnum
-                              ]);
-                            }
+                            // foreach ($update_lately_chat_idx as $value) {
+                            //   DB::table('chat_room')->where('user',$user)->where('chat_room',$value->ch_idx)->update([
+                            //     'lately_chat_idx' => $value->chatnum
+                            //   ]);
+                            // }
                             // $array = [];
                             // foreach ($data as $data) {
                             //   $array[] =  DB::table('chat_list')->where('chatnum','>',$data->chat_idx)->where('ch_idx',$data->chat_room)->get();
@@ -330,4 +330,40 @@ class SMSController extends Controller
                             //
                             //   return 0;
                           }
+                          public function chat_status(Request $request){
+                            $user = $request->user;
+                            $room_number = $request->room;
+                            $lately_chat_idx = $request->lately_chat_idx;
+                            // $first_chat_idx = json_decode($request->first_chat_idx);
+
+                            // return count($lately_chat_idx);
+                              $user_list = DB::select("SELECT user FROM chat_room WHERE chat_room = $room_number");
+                              // DB::select("UPDATE chat_list SET chat_status = chat_status +1 WHERE chatnum IN
+                              //   (SELECT chatnum FROM(SELECT * FROM chat_list WHERE ch_idx = '$room_number' AND chatnum>= (SELECT lately_chat_idx FROM chat_room WHERE chat_room = '$room_number' AND USER = '$user'))a);");
+
+                                // DB::table('chat_room')->where('user',$user)->where('chat_room',$room_number)->update([
+                                //   'lately_chat_idx' => DB::select("SELECT chatnum FROM chat_list WHERE ch_idx = '$room_number' ORDER BY chatnum DESC LIMIT 1;")[0]->chatnum,
+                                //   // 'first_chat_idx' => $first_chat_idx[0]->chat_idx
+                                // ]);
+                                DB::table('chat_room')->where('user',$user)->where('chat_room',$room_number)->update([
+                                  'lately_chat_idx' => $lately_chat_idx,
+                                  // 'first_chat_idx' => $first_chat_idx[0]->chat_idx
+                                ]);
+                                //로컬 사용자 기준 채팅 데이터
+                                // $data = DB::select("SELECT * FROM chat_list WHERE ch_idx = $room_number AND chatnum >= $first_chat_idx");
+                                foreach ($user_list as $value) {
+                                  //2번째가 채널임
+                                  // return $value->user;
+                                  // $first_data = DB::table('chat_room')->select('first_chat_idx')->where('user',$value->user)->where('chat_room',$room_number)->get();
+                                  // return $first_data[0]->first_chat_idx;
+                                  // $err = $first_data[0]->first_chat_idx;
+                                  // $data = DB::select("SELECT chatnum,chat_status FROM chat_list WHERE ch_idx = '$room_number' AND chatnum >= '$err' AND user = '$value->user'");
+                                  // $data = DB::table('chat_room')->select('user','lately_chat_idx')->where('user',$user)->where('chat_room',$room_number)->get();
+                                  broadcast(new \App\Events\chartEvent($user,$value->user,"UPDATE",$room_number,$lately_chat_idx,null,null));
+                                }
+
+
+                              return 0;
+                              return json_encode($data,JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+                            }
                         }
