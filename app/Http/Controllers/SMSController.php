@@ -112,7 +112,7 @@ class SMSController extends Controller
     where('chat_room.chat_room','=',$room)->
     get();
     FCMController::fcm($user, $message, $talktoken, "2", $room);
-    broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg,null,$chatidx,$date->format('yy-m-d H:i:s'),$user_count));
+    broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg,null,$chatidx,$date->format('yy-m-d H:i:s'),$user_count,null));
     return $talktoken;
   }
 
@@ -129,18 +129,22 @@ class SMSController extends Controller
    $date = new DateTime();
    $user = $request->user;
    $room = $request->room;
-   $message = $request->sendimg;
    $user_count = DB::table('chat_room')->where('chat_room',$room)->get()->count()-1;
+   $image_status = 1;
+   $message = "사진";
    $chatidx = DB::table('chat_list')->insertGetId([
      'img' => $picture,
      'user' => $user,
      'ch_idx' => $room,
+     'message' => $message,
      'created_at' =>$date->format('yy-m-d H:i:s'),
      'chat_status' => $user_count
    ]);
+
    DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->update([
      'lately_chat_idx' => $chatidx
    ]);
+
    $talktoken =
    DB::table('users')->
    select('Token')->
@@ -149,7 +153,7 @@ class SMSController extends Controller
    where('chat_room.chat_room','=',$room)->
    get();
    FCMController::fcm($user, $message, $talktoken, "2", $room);
-   broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendimg,null,$chatidx,$date->format('yy-m-d H:i:s'),$user_count));
+   broadcast(new \App\Events\chartEvent($user, $room, $picture,null,$chatidx,$date->format('yy-m-d H:i:s'),$user_count,$image_status));
    return $talktoken;
  }
 
@@ -201,7 +205,7 @@ class SMSController extends Controller
                 'chat_room' => $room_idx
               ]);
               $idx = DB::table('follow')->select('room_idx')->where('f_user_id', $id1)->where('follow', $id2)->get();
-              broadcast(new \App\Events\chartEvent("[".$id1.",".$id2."]",$id2, $room_idx,null,null,null,null));
+              broadcast(new \App\Events\chartEvent("[".$id1.",".$id2."]",$id2, $room_idx,null,null,null,null,null));
             }
             //현재 서로 팔로우는 안되어 있지만 서로 팔로우를 한번이라도 했었던적이 있었을때
             else{
@@ -273,7 +277,7 @@ class SMSController extends Controller
               'room_name' => $room
             ]);
             if($id != $data[$key]){
-              broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room,null,null,null));
+              broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room,null,null,null,null));
             }
 
           }
@@ -289,7 +293,7 @@ class SMSController extends Controller
 
         $users = DB::table('chat_room')->where('chat_room',$room)->get();
         foreach($users as $key => $value){
-          broadcast(new \App\Events\chartEvent($user, $users[$key]->user, "SYSTEM",$room,null,null,null));
+          broadcast(new \App\Events\chartEvent($user, $users[$key]->user, "SYSTEM",$room,null,null,null,null));
         }
 
         $chatidx = DB::table('chat_list')->insertGetId([
@@ -303,7 +307,7 @@ class SMSController extends Controller
           'lately_chat_idx' => $chatidx
         ]);
 
-        broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,$chatidx, $date->format('yy-m-d H:i:s'),null));
+        broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,$chatidx, $date->format('yy-m-d H:i:s'),null,null));
         DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->delete();
 
         return $request;
@@ -398,7 +402,7 @@ class SMSController extends Controller
                                   // $err = $first_data[0]->first_chat_idx;
                                   // $data = DB::select("SELECT chatnum,chat_status FROM chat_list WHERE ch_idx = '$room_number' AND chatnum >= '$err' AND user = '$value->user'");
                                   // $data = DB::table('chat_room')->select('user','lately_chat_idx')->where('user',$user)->where('chat_room',$room_number)->get();
-                                  broadcast(new \App\Events\chartEvent($user,$value->user,"UPDATE",$room_number,$lately_chat_idx,null,null));
+                                  broadcast(new \App\Events\chartEvent($user,$value->user,"UPDATE",$room_number,$lately_chat_idx,null,null,null));
                                 }
 
 

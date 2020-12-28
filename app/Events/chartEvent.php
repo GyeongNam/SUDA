@@ -20,12 +20,13 @@ class chartEvent implements ShouldBroadcast
     public $chat_idx;
     public $time;
     public $user_count;
+    public $image_status;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($user, $channel, $m, $room_name, $chat_idx, $time, $user_count)
+    public function __construct($user, $channel, $m, $room_name, $chat_idx, $time, $user_count,$image_status)
     {
         $this->message = $m;
         $this->user = $user;
@@ -34,6 +35,7 @@ class chartEvent implements ShouldBroadcast
         $this->chat_idx = $chat_idx;
         $this->time = $time;
         $this->user_count = $user_count;
+        $this->image_status = $image_status;
     }
 
     /**
