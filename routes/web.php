@@ -33,6 +33,7 @@ Route::post('/search', [SMSController::class, 'search']);
 Route::post('/follows', [SMSController::class, 'follows']);
 Route::post('/unfollow', [SMSController::class, 'unfollow']);
 Route::post('/friendlist', [SMSController::class, 'friendlist']);
+Route::post('/sendimg', [SMSController::class, 'sendimg']);
 
 Route::post('/getroom', [SMSController::class, 'getroom']);
 Route::post('/echoroom', [SMSController::class, 'echoroom']);

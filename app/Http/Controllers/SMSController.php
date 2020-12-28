@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\FCMController;
 use Illuminate\Http\Request;
 use DB;
+use File;
+use Image;
 use DateTime;
 class SMSController extends Controller
 {
@@ -113,6 +115,43 @@ class SMSController extends Controller
     broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg,null,$chatidx,$date->format('yy-m-d H:i:s'),$user_count));
     return $talktoken;
   }
+
+  function sendimg(Request $request) {
+
+  if($request->hasFile('image')){
+  $image = $request->file('image');
+  $picture= $image->getClientOriginalName();
+  Image::make($image)->save(public_path('/img/'.$picture));
+  }
+  else {
+  $picture = null;
+  }
+   $date = new DateTime();
+   $user = $request->user;
+   $room = $request->room;
+   $message = $request->sendimg;
+   $user_count = DB::table('chat_room')->where('chat_room',$room)->get()->count()-1;
+   $chatidx = DB::table('chat_list')->insertGetId([
+     'img' => $picture,
+     'user' => $user,
+     'ch_idx' => $room,
+     'created_at' =>$date->format('yy-m-d H:i:s'),
+     'chat_status' => $user_count
+   ]);
+   DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->update([
+     'lately_chat_idx' => $chatidx
+   ]);
+   $talktoken =
+   DB::table('users')->
+   select('Token')->
+   join('chat_room', 'chat_room.user','=', 'users.id')->
+   where('chat_room.user', '!=', $user)->
+   where('chat_room.chat_room','=',$room)->
+   get();
+   FCMController::fcm($user, $message, $talktoken, "2", $room);
+   broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendimg,null,$chatidx,$date->format('yy-m-d H:i:s'),$user_count));
+   return $talktoken;
+ }
 
   public function search(Request $request){
     $data = DB::select("SELECT
