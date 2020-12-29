@@ -308,7 +308,7 @@ class SMSController extends Controller
         ]);
 
         broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,$chatidx, $date->format('yy-m-d H:i:s'),null,null));
-        DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->delete();
+        DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->where("room_name","!=",null)->delete();
 
         return $request;
       }
