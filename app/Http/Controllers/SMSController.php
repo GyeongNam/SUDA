@@ -237,7 +237,10 @@ class SMSController extends Controller
           // 상대방 기준 팔로우 아닐경우
 
         }
-        return $data.",".$idx[0]->room_idx;
+        $room_list = DB::table('chat_room')->where('chat_room',$idx[0]->room_idx)->get();
+        $room_index = $idx[0]->room_idx;
+        return json_encode(compact('data','room_list','room_index'),JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE);
+        // return $data.",".$idx[0]->room_idx;
       }
 
       public function friendlist(Request $request) {
