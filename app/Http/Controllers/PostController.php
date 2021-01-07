@@ -186,7 +186,7 @@ class PostController extends Controller
           'post_num'=> $request->post_num,
           'c_activation' => 1,
           'seq' => 1,
-          'created_at' => $now->format('yy-m-d H:i:s'),
+          'created_at' => $now->format('Y-m-d H:i:s'),
           'parent'=>$request->comment_num
         ]);
         //!댓글 작성자 == 대댓글작성자
@@ -203,7 +203,7 @@ class PostController extends Controller
           'post_num'=> $request->post_num,
           'c_activation' => 1,
           'seq' => $data[0]->seq+1,
-          'created_at' => $now->format('yy-m-d H:i:s'),
+          'created_at' => $now->format('Y-m-d H:i:s'),
           'parent'=>$request->comment_num
         ]);
         //!댓글 작성자 == 대댓글작성자
@@ -217,7 +217,7 @@ class PostController extends Controller
         'comment' => $request->reply,
         'c_writer' => $request->writer,
         'post_num'=> $request->post_num,
-        'created_at' => $now->format('yy-m-d H:i:s'),
+        'created_at' => $now->format('Y-m-d H:i:s'),
         'c_activation' =>1,
         'seq' => 1,
       ]);

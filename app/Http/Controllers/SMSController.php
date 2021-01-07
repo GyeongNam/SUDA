@@ -98,7 +98,7 @@ class SMSController extends Controller
       'message' => $message,
       'user' => $user,
       'ch_idx' => $room,
-      'created_at' =>$date->format('yy-m-d H:i:s'),
+      'created_at' =>$date->format('Y-m-d H:i:s'),
       'chat_status' => $user_count
     ]);
     DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->update([
@@ -112,7 +112,7 @@ class SMSController extends Controller
     where('chat_room.chat_room','=',$room)->
     get();
     FCMController::fcm($user, $message, $talktoken, "2", $room);
-    broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg,null,$chatidx,$date->format('yy-m-d H:i:s'),$user_count,null));
+    broadcast(new \App\Events\chartEvent($request->user, $request->room, $request->sendmsg,null,$chatidx,$date->format('Y-m-d H:i:s'),$user_count,null));
     return $talktoken;
   }
 
@@ -137,7 +137,7 @@ class SMSController extends Controller
      'user' => $user,
      'ch_idx' => $room,
      'message' => $message,
-     'created_at' =>$date->format('yy-m-d H:i:s'),
+     'created_at' =>$date->format('Y-m-d H:i:s'),
      'chat_status' => $user_count
    ]);
 
@@ -153,7 +153,7 @@ class SMSController extends Controller
    where('chat_room.chat_room','=',$room)->
    get();
    FCMController::fcm($user, $message, $talktoken, "2", $room);
-   broadcast(new \App\Events\chartEvent($user, $room, $picture,null,$chatidx,$date->format('yy-m-d H:i:s'),$user_count,$image_status));
+   broadcast(new \App\Events\chartEvent($user, $room, $picture,null,$chatidx,$date->format('Y-m-d H:i:s'),$user_count,$image_status));
    return $talktoken;
  }
 
@@ -303,14 +303,14 @@ class SMSController extends Controller
           'message' => $user." 님이 채팅방을 나갔습니다.",
           'user' => "SYSTEM",
           'ch_idx' => $room,
-          'created_at' =>$date->format('yy-m-d H:i:s')
+          'created_at' =>$date->format('Y-m-d H:i:s')
         ]);
 
         DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->update([
           'lately_chat_idx' => $chatidx
         ]);
 
-        broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,$chatidx, $date->format('yy-m-d H:i:s'),null,null));
+        broadcast(new \App\Events\chartEvent("SYSTEM", $room, $user." 님이 채팅방을 나갔습니다.", null ,$chatidx, $date->format('Y-m-d H:i:s'),null,null));
         DB::table('chat_room')->where('user',$user)->where('chat_room',$room)->where("room_name","!=",null)->delete();
 
         return $request;
