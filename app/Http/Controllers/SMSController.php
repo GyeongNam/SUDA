@@ -279,9 +279,9 @@ class SMSController extends Controller
               'chat_room' => $idx,
               'room_name' => $room
             ]);
-            if($id != $data[$key]){
+            // if($id != $data[$key]){
               broadcast(new \App\Events\chartEvent($data, $data[$key], $idx,$room,null,null,null,null));
-            }
+            // }
 
           }
           $redata = DB::table('chat_room')->where('chat_room',$idx)->get();
